@@ -1,0 +1,48 @@
+Planning
+
+message objects contain a chatID field, which references the chat it belongs in
+    -helps w pagination
+
+routes for messages:
+    -send a msg (w/ or w/o media files) & emit to socket.io room
+        -/upload for multimedia
+    -get msgs for some chat (up to a limit/before some time) -- pagination is a frontend deal
+
+routes for chats:
+    -create chat or open current chat (upon req)
+
+routes for users:
+    -register
+    -login
+    -search users by id/UN
+    -get own user info
+    -list all chats 
+
+socket stuff:
+    -when a msg object is emitted to the room, send it to all participants
+
+SSO:
+    -Google Oauth
+    -look into jwt tokens, bcrypt
+    -make /middleware/auth stuff
+
+frontend:
+    -make something
+
+caching:
+    -cache first page of recently opened messages -- TTL of 5 min?
+        -includes multimedia
+    -messages typed out but didn't send (maybe)
+    -online/typing status (maybe)
+
+object store:
+    -video, audio, images
+    -GCP Cloud Storage (GCS)
+    -get obj store URL upon getting the page of the chat it belongs in
+
+camera & mic:
+    -figure this out later?
+    -frontend deal where it sends the blob using /upload path (msg)
+
+
+
