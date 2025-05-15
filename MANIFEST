@@ -4,19 +4,20 @@ message objects contain a chatID field, which references the chat it belongs in
     -helps w pagination
 
 routes for messages:
-    -send a msg (w/ or w/o media files) & emit to socket.io room
+    -[DONE] send a msg (w/ or w/o media files) & emit to socket.io room
         -/upload for multimedia
-    -get msgs for some chat (up to a limit/before some time) -- pagination is a frontend deal
+    -[DONE] get msgs for some chat (up to a limit/before some time) -- pagination is a frontend deal
 
 routes for chats:
-    -create chat or open current chat (upon req)
+    -[DONE] create chat or open current chat (upon req) 
+    -[DONE] list all chats
 
 routes for users:
     -register
+        -set username
     -login
     -search users by id/UN
     -get own user info
-    -list all chats 
 
 socket stuff:
     -when a msg object is emitted to the room, send it to all participants
@@ -27,7 +28,7 @@ SSO:
     -make /middleware/auth stuff
 
 frontend:
-    -make something
+    -make anything
 
 caching:
     -cache first page of recently opened messages -- TTL of 5 min?
