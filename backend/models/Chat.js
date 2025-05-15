@@ -2,7 +2,6 @@ import mongoose from 'mongoose';
 
 const ChatSchema = new mongoose.Schema({
   name: String,
-  isGroup: { type: Boolean, default: false },
   participants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   createdAt: { type: Date, default: Date.now }
 });
