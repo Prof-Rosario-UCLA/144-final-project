@@ -1,11 +1,7 @@
 // routes/messages.js
-const express   = require('express');
-const multer    = require('multer');
-const Message   = require('../models/Message');
-const router    = express.Router();
-
-// configure multer for multipart uploads
-const upload = multer({ storage: multer.memoryStorage() });
+const express = require('express');
+const Message = require('../models/Message');
+const router = express.Router();
 
 // Fetch messages in a conversation (with optional pagination)
 // GET /messages/:chatId?before=<ISODate>&limit=50
@@ -27,9 +23,7 @@ router.get('/:chatId/', async (req, res) => {
 });
 
 // POST /messages/:chatId/
-router.post(
-  '/:chatId/messages',
-  async (req, res) => {
+router.post('/:chatId/messages', async (req, res) => {
     try {
       const { chatId } = req.params;
       const { text }   = req.body;
