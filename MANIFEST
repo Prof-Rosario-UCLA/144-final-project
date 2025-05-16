@@ -20,7 +20,7 @@ routes for users:
     -get own user info
 
 socket stuff:
-    -when a msg object is emitted to the room, send it to all participants
+    - [DONE] when a msg object is emitted to the room, send it to all participants
 
 SSO:
     -Google Oauth
