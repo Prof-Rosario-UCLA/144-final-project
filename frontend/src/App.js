@@ -1,4 +1,6 @@
+import Login from './pages/login';
 import logo from './logo.svg';
+import SetUsername from './pages/setUsername';
 // import './App.css';
 
 function App() {
@@ -6,11 +8,13 @@ function App() {
     <div
     className="flex w-screen h-screen bg-blue-800"
     >
-      <h1
+      {/* <h1
       className="text-white font-2xl bg-red-900 m-auto"
       >
         Final Project
-      </h1>
+      </h1> */}
+      <Login />
+      {/* <SetUsername /> */}
     </div>
   );
 }

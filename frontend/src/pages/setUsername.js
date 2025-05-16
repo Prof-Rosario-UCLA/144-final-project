@@ -77,7 +77,10 @@ export default function SetUsername() {
                         placeholder="your_username"
                         />
                         {error && (
-                            <p id="username-error" className="mt-2 text-sm text-red-500">
+                            <p 
+                            id="username-error" 
+                            className="mt-2 text-sm text-red-500"
+                            >
                                 {error}
                             </p>
                         )}
