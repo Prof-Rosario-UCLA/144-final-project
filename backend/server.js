@@ -25,7 +25,6 @@ const io = require("socket.io")(httpServer, {
     origin: "http://localhost:3000",
   },
 });
-const {onConnect} = require("./utils/socket")
 
 // middleware auth
 const socketMap = new Map();
