@@ -9,6 +9,7 @@ const MessageSchema = new mongoose.Schema({
     url: String,         
     type: { type: String, enum: ['image','video','audio'] }
   }],
+  isMedia: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now }
 });
 

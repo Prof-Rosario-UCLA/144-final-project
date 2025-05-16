@@ -28,15 +28,33 @@ const io = require("socket.io")(httpServer, {
 const {onConnect} = require("./utils/socket")
 
 // middleware auth
+const socketMap = new Map();
+
 io.use((socket, next) => {
   const { username, user_id } = socket.handshake.auth;
   if (!username || !user_id) return next(new Error("invalid user or id"));
   socket.username = username;
-  socket.id = user_id;
+  socket.userId = user_id;
   next();
 });
 
-io.on("connection", onConnect(io))
+io.on("connection", (socket) => {
+
+  socketMap.set(socket.userId, socket.id);
+
+  socket.on("disconnect", () => {
+    socketMap.delete(socket.userId);
+  });
+
+  socket.on("private message", ({ content, to }) => {
+    const targetId = socketMap.get(to);
+    socket.to(targetId).emit("private message", {
+        content: content,
+        from: socket.userId,
+        fromUser: socket.username
+    });
+  });
+});
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
