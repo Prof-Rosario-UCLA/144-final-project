@@ -1,9 +1,32 @@
 require('dotenv').config();
-const express  = require('express');
+const express = require('express');
 const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const cors = require('cors');
+const passport = require('passport');
+const { router: userRoutes, verifyToken } = require('./routes/users');
+const { router: messageRoutes } = require('./routes/messages');
+const { router: chatRoutes } = require('./routes/chats');
+
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
+app.use(passport.initialize());
+
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  credentials: true
+}));
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || 'session_dne',
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
@@ -15,18 +38,23 @@ mongoose.connect(process.env.MONGO_URI, {
   process.exit(1);
 });
 
+app.use('/api/users', userRoutes);
+// these don't work yet for some reason
+// app.use('/api/messages', messageRoutes);
+// app.use('/api/chats', chatRoutes);
+
 const httpServer = require("http").createServer(app);
 //no idea if this is right
-httpServer.listen(3002, () => {
-  console.log(`http is running on port 3002`);
+const socketPort = process.env.SOCKET_PORT || 3002;
+httpServer.listen(socketPort, () => {
+  console.log(`http Socket is running on port ${socketPort}`);
 });
 const io = require("socket.io")(httpServer, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: process.env.FRONTEND_URL || "http://localhost:3000",
   },
 });
 
-// middleware auth
 const socketMap = new Map();
 
 io.use((socket, next) => {
@@ -55,7 +83,7 @@ io.on("connection", (socket) => {
   });
 });
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 app.listen(port, () => {
-  console.log(`🚀 Server listening on http://localhost:${port}`);
+  console.log(`Server listening on http://localhost:${port}`);
 });
