@@ -15,25 +15,25 @@ routes for chats:
 routes for users:
     -register
         -set username
-    -login
+    -[DONE] login
     -search users by id/UN
-    -get own user info
+    -[DONE] get own user info
 
 socket stuff:
     -[DONE] when a msg object is emitted to the room, send it to all participants
 
 SSO:
-    -Google Oauth
-    -look into jwt tokens, bcrypt
-    -make /middleware/auth stuff
+    -[DONE] Google Oauth
+    -[DONE] look into jwt tokens, bcrypt
+    -[DONE] make /middleware/auth stuff
 
 frontend:
     -login page
         -[DONE] viewability
-        -actual sso impl
+        -[DONE] actual sso impl
     -set username page
         -[DONE] viewability
-        -actual sso impl
+        -[DONE] actual sso impl
     -chatting area once you login
     -profile viewing?
 
