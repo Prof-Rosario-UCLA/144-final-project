@@ -73,9 +73,17 @@ export default function Login({ onLoginSuccess }) {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen w-screen flex flex-col items-center justify-center bg-sky-50 p-4">
-                <div className="w-full max-w-sm bg-white rounded-2xl shadow-md p-6 text-center">
-                    <h2 className="text-xl font-bold mb-4 text-gray-800">Verifying login...</h2>
+            <div 
+            className="min-h-screen w-screen flex flex-col items-center justify-center bg-sky-50 p-4"
+            >
+                <div 
+                className="w-full max-w-sm bg-white rounded-2xl shadow-md p-6 text-center"
+                >
+                    <h2 
+                    className="text-xl font-bold mb-4 text-gray-800"
+                    >
+                        Verifying login...
+                    </h2>
                     <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
                 </div>
             </div>

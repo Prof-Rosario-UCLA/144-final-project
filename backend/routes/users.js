@@ -7,7 +7,6 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 
-//  Passport Init
 passport.use(
   new GoogleStrategy(
     {
@@ -55,17 +54,13 @@ passport.deserializeUser(async (id, done) => {
 });
 
 
-// routes
-router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }), (req, res) => {
-  res.redirect('http://localhost:3000/');
-});
+router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 router.get(
   '/auth/google/callback',
-  passport.authenticate('google', { session: false, failureRedirect: '/login' }),
+  passport.authenticate('google', { session: false, failureRedirect: '/' }),
   (req, res) => {
     try {
-      // Create JWT token
       const token = jwt.sign(
         { 
           id: req.user._id,
@@ -76,16 +71,20 @@ router.get(
         { expiresIn: '1d' }
       );
 
-      // Redirect to frontend with token
-      res.redirect(`${process.env.FRONTEND_URL}/auth-success?token=${token}`);
+      res.cookie('token', token, {
+        httpOnly: true,
+        secure: false, 
+        maxAge: 7 * 24 * 60 * 60 * 1000 
+      });
+
+      res.redirect(`${process.env.FRONTEND_URL}/?token=${token}`);
     } catch (error) {
       console.error('Error creating token:', error);
-      res.redirect('/login?error=authentication_failed');
+      res.redirect('/?error=authentication_failed');
     }
   }
 );
 
-// Verify JWT token middleware
 const verifyToken = (req, res, next) => {
   try {
     const token = req.headers.authorization?.split(' ')[1];
@@ -115,7 +114,7 @@ router.get('/me', verifyToken, async (req, res) => {
   }
 });
 
-// Socket authentication helper
+
 router.post('/validate-token', (req, res) => {
   try {
     const { token } = req.body;
