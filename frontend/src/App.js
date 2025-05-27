@@ -9,6 +9,7 @@ function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState("messages"); // default tab?
+  const [selChat, setSelChat] = useState([]);
   // console.log(tab)
 
   const checkAuth = async () => {
@@ -136,9 +137,9 @@ function App() {
           className="container mx-auto w-full h-full max-h-max flex-1 flex min-w-full bg-transparent overflow-hidden"
           >
             {(tab === "messages") ? (
-              <Messages user={user} />
+              <Messages user={user} selChat={selChat} setSelChat={setSelChat} />
             ) : ((tab === "find") ? (
-              <FindNewChats user={user} />
+              <FindNewChats user={user} setTab={setTab} setSelChat={setSelChat}/>
             ) : (
               <Profile user={user} />
             ))}
