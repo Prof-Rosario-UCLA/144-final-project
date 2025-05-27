@@ -12,15 +12,21 @@ routes for chats:
     -[DONE] create chat or open current chat (upon req) 
     -[DONE] list all chats
 
+
+Chats should have some schema field or route indicator on latest message sent in it (for frontend ordering)
+[DONE] for chats and msgs routes, they need to work on server.js run
+
 routes for users:
-    -register
+    -[DONE] register
         -set username
     -[DONE] login
-    -search users by id/UN
+    -[DONE] search users by UN - regex
     -[DONE] get own user info
 
 socket stuff:
     -[DONE] when a msg object is emitted to the room, send it to all participants
+    -[DONE] implement immediate update on rcv on frontend
+    -do notif feature and update order of displayed chats
 
 SSO:
     -[DONE] Google Oauth
@@ -28,20 +34,15 @@ SSO:
     -[DONE] make /middleware/auth stuff
 
 frontend:
-    -login page
+    -[DONE] login page
         -[DONE] viewability
         -[DONE] actual sso impl
-    -set username page
+    -set username page - easy af
         -[DONE] viewability
         -[DONE] actual sso impl
-    -chatting area once you login
-    -profile viewing?
+    -[DONE] chatting area once you login
 
-caching:
-    -cache first page of recently opened messages -- TTL of 5 min?
-        -includes multimedia
-    -messages typed out but didn't send (maybe)
-    -online/typing status (maybe)
+no need for caching
 
 object store:
     -video, audio, images
