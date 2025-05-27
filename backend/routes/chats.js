@@ -5,15 +5,20 @@ const router = express.Router();
 // create/get(if exists) chat with two ppl
 router.post('/', async (req, res) => {
     try {
-      let { participants } = req.body;
-      if (!Array.isArray(participants) || participants.length !== 2) return res.status(400).json({ error: 'Must provide exactly two participant IDs.' });
-      
-      participants = participants.map(String).sort();
-  
-      let convo = await Chat.findOne({ participants });
-      if (!convo) convo = await Chat.create({ participants });
-      
-      res.status(200).json(convo);
+        let { participants } = req.body;
+        if (!Array.isArray(participants) || participants.length !== 2) return res.status(400).json({ error: 'Must provide exactly two participant IDs.' });
+        
+        participants = participants.map(String).sort();
+
+        const key_search = participants[0] + "+" + participants[1]
+
+        let convo = await Chat.findOne({ name: key_search });
+        if (!convo) convo = await Chat.create({ 
+            name: key_search,
+            participants 
+        });
+        
+        res.status(200).json(convo);
     } catch (err) {
       console.error(err);
       res.status(500).json({ error: 'Server error' });
@@ -22,9 +27,10 @@ router.post('/', async (req, res) => {
 
 
 // get all existing for me
-router.get('/', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
-        const me = req.user.userId;
+        // console.log(req.user, req.body)
+        const me = req.params.id;
         const convos = await Chat
                             .find({ participants: me })
                             .populate('participants', 'username');
@@ -36,4 +42,4 @@ router.get('/', async (req, res) => {
     }
 });
   
-module.exports = router;
+module.exports = { router };

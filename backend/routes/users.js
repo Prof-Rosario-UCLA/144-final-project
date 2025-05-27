@@ -80,7 +80,7 @@ router.get(
       res.redirect(`${process.env.FRONTEND_URL}/?token=${token}`);
     } catch (error) {
       console.error('Error creating token:', error);
-      res.redirect('/?error=authentication_failed');
+      res.redirect(`${process.env.FRONTEND_URL}`);
     }
   }
 );
@@ -110,7 +110,7 @@ router.get('/me', verifyToken, async (req, res) => {
     }
     res.json(user);
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Internal Server error' });
   }
 });
 
@@ -133,6 +133,40 @@ router.post('/validate-token', (req, res) => {
     });
   } catch (error) {
     res.json({ valid: false });
+  }
+});
+
+router.get('/', async (req, res) => {
+  try {
+    const users = await User.find({})
+      .select('username email')
+      .lean(); 
+
+    res.json(users);
+  } catch (error) {
+    console.log("/users/ err:", error)
+    res.status(500).json({ message: 'Internal server error' });
+  }
+})
+
+
+router.get('/:query', async (req, res) => {
+  try {
+    const query = req.params.query;
+
+    const filter = query
+      ? { 'username': { $regex: `${query}`, $options: 'i' } }
+      : {};
+
+
+    const users = await User.find(filter)
+      .select('username email')
+      .lean();
+
+    res.json(users);
+  } catch (error) {
+    console.log("/users/ err:", error)
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
 
