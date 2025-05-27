@@ -1,22 +1,25 @@
-// import mongoose from 'mongoose';
-const mongoose = require('mongoose')
+// models/Chat.js
+const mongoose = require('mongoose');
 
 const ChatSchema = new mongoose.Schema({
-  name: String,
-  participants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-  createdAt: { type: Date, default: Date.now }
+    name: { type: String, required: true, unique: true},
+    participants: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "User",
+        validate: {
+            validator: (v) => Array.isArray(v) && v.length === 2,
+            message: "A chat must have exactly two participants"
+        }
+    },
+    createdAt: { type: Date, default: Date.now },
+    // mostRecentSent: { type: Date }
 });
 
-ChatSchema.pre("validate", function(next) {
-    if (this.participants.length !== 2) {
-        return next(new Error("We only allow one-on-one chats"));
-    }
-    next();
+ChatSchema.pre('save', function(next) {
+  if (this.participants.length === 2) {
+    this.participants.sort();
+  }
+  next();
 });
-
-ChatSchema.index(
-    { "participants" : 1},
-    { unique: true, partialFilterExpressio: { "participants.1": { $exists: true } } }
-);
 
 module.exports = mongoose.model('Chat', ChatSchema);

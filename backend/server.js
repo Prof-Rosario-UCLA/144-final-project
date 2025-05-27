@@ -39,9 +39,8 @@ mongoose.connect(process.env.MONGO_URI, {
 });
 
 app.use('/api/users', userRoutes);
-// these don't work yet for some reason
-// app.use('/api/messages', messageRoutes);
-// app.use('/api/chats', chatRoutes);
+app.use('/api/messages', messageRoutes);
+app.use('/api/chats', chatRoutes);
 
 const httpServer = require("http").createServer(app);
 //no idea if this is right
