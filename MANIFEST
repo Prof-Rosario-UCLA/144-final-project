@@ -7,10 +7,13 @@ routes for messages:
     -[DONE] send a msg (w/ or w/o media files) & emit to socket.io room
         -/upload for multimedia
     -[DONE] get msgs for some chat (up to a limit/before some time) -- pagination is a frontend deal
+    -add read flag maybe? depends on chat schema
 
 routes for chats:
     -[DONE] create chat or open current chat (upon req) 
     -[DONE] list all chats
+    -may need to overhaul and add lastMessageSent and lastTimeRead per chat for notif handling 
+        -how much should be handled on FE
 
 
 Chats should have some schema field or route indicator on latest message sent in it (for frontend ordering)
@@ -18,7 +21,8 @@ Chats should have some schema field or route indicator on latest message sent in
 
 routes for users:
     -[DONE] register
-        -set username
+    -set username (is this the only profile modification?)
+    -pfp maybe
     -[DONE] login
     -[DONE] search users by UN - regex
     -[DONE] get own user info
@@ -41,6 +45,8 @@ frontend:
         -[DONE] viewability
         -[DONE] actual sso impl
     -[DONE] chatting area once you login
+    -pagination handling for both chats and messages per chat
+    -displaying media types in chat and chat's latest message preview
 
 no need for caching
 

@@ -12,7 +12,11 @@ const ChatSchema = new mongoose.Schema({
         }
     },
     createdAt: { type: Date, default: Date.now },
-    // mostRecentSent: { type: Date }
+    latestMessage: { type: mongoose.Schema.Types.ObjectId, ref: 'Message', required: true },
+    latestReadAt: [{
+        user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+        timestamp: { type: Date, default: Date.now }
+    }]
 });
 
 ChatSchema.pre('save', function(next) {
