@@ -4,10 +4,11 @@ import { io } from "socket.io-client";
 
 export default function Messages({ user, selChat, setSelChat }) {
     const [message, setMessage] = useState("");
-    const [chats, setChats] = useState([]);
+    const [allUserChats, setAllUserChats] = useState([]);
     const [chatHistories, setChatHistories] = useState({})
     // const [selChat, setSelChat] = useState([]);
     const [selChatHistory, setSelChatHistory] = useState(null);
+    const [newMsgs, setNewMsgs] = useState([]);
     const scrollBottom = useRef();
     const moveToTop = (list, key) => {
         const obj = list.find(item => item._id === key);
@@ -34,7 +35,9 @@ export default function Messages({ user, selChat, setSelChat }) {
     }, [socket])
 
     useEffect(() => {
-        handleSelChat("", selChat)
+        if (!selChat) return
+        const beforeTS = (new Date()).toISOString()
+        getMsgHistory(selChat._id, beforeTS)
     }, [])
 
     socket.on("private message", ({content, from, fromUser}) => {
@@ -52,9 +55,16 @@ export default function Messages({ user, selChat, setSelChat }) {
         if(selChat.participants.find(p => p._id === from) !== undefined) {
             // console.log("gotten from", fromUser)
             setSelChatHistory([...selChatHistory, newMsg])
-            setChats([...moveToTop(chats, selChat?._id)]);
+            setAllUserChats([...moveToTop(allUserChats, selChat?._id)]);
         } else {
+            console.log("new msg not in sel'd from", fromUser)
             // new msg functionality -- TBD
+            const newMsgChatObj = allUserChats.find(c => c.participants[0]._id === from || c.participants[1]._id === from)
+            console.log("NEW MSG INCOMING", newMsgChatObj)
+            if(newMsgChatObj ) {
+                setNewMsgs([...newMsgs, newMsgChatObj._id])
+                setAllUserChats([...moveToTop(allUserChats, newMsgChatObj._id)]);
+            }
         }
     })
 
@@ -69,7 +79,7 @@ export default function Messages({ user, selChat, setSelChat }) {
             const r = await resp.json()
             // console.log(r)
             // console.log(user)
-            setChats(() => r)
+            setAllUserChats(() => r)
         } catch(e) {
             console.log("getAllChats error:", e)
         }
@@ -115,7 +125,7 @@ export default function Messages({ user, selChat, setSelChat }) {
     const handleSendMsg = (e) => {
         e.preventDefault();
         sendMessage();
-        setChats([...moveToTop(chats, selChat?._id)]);
+        setAllUserChats([...moveToTop(allUserChats, selChat?._id)]);
         setMessage("");
     }
 
@@ -137,6 +147,7 @@ export default function Messages({ user, selChat, setSelChat }) {
     }
 
     const handleSelChat = (e, chat) => {
+        setNewMsgs([...newMsgs.filter(m => m !== chat._id)])
         if(e) e.preventDefault();
         setSelChat(chat);
         console.log("selChat", chat._id)
@@ -151,29 +162,37 @@ export default function Messages({ user, selChat, setSelChat }) {
             <div
             className="h-screen sm:w-1/5 w-1/3 bg-violet-100 max-h-full divide-sky-900 overflow-y-auto border-r-2 border-black flex flex-col"
             >
-                {((chats.length > 0) ? (chats.map((c, i) => (
+                <h1
+                className='w-full py-[1em] text-center font-extrabold text-violet-900 border-b-2 border-black text-xs sm:text-lg'
+                >
+                    Your Conversations
+                </h1>
+                
+                {((allUserChats.length > 0) ? (allUserChats.map((c, i) => (
                     <button
-                    className={"sm:h-[8em] h-[5em] pl-[.5em] w-full p-2 sm:pl-[1em] bg-violet-200 hover:bg-violet-300 flex flex-col items-center text-center transition-colors ease-linear duration-100 border-b-2 border-black"  + ((c._id === selChat?._id) ? " bg-fuchsia-300": " ")}
+                    className={"sm:h-[8em] h-[5em] pl-[.5em] w-full p-2 bg-violet-200 hover:bg-violet-300 flex flex-row items-center justify content text-center transition-colors ease-linear duration-100 border-b-2 border-black"  + ((c._id === selChat?._id) ? " bg-fuchsia-300": " ")}
                     key={i}
                     onClick={(e) => handleSelChat(e, c)}
                     >
+                        <div 
+                        className={'sm:w-[.8em] sm:h-[.8em] w-[.4em] h-[.4em] rounded-full mr-[.5em] flex-shrink-0 transition-colors ease-linear duration-200 ' + ((newMsgs.includes(c._id)) ? "bg-sky-700" : "bg-transparent")}
+                        />
                         <h1
-                        className="text-xs sm:text-lg font-bold mt-[.5em] sm:mt-[1em]"
+                        className="text-xs sm:text-lg font-bold text-nowrap overflow-hidden whitespace-nowrap truncate"// mt-[.5em] sm:mt-[1em]"
                         >
                             {c.participants.find(p => p._id !== user._id).username}
                         </h1>
-                        <p
+                        {/*(newMsgs.includes(c._id)) ? (<p
                         className="text-xs max-w-full sm:text-lg mt-[.5em] sm:mt-[1em] text-gray-600 text-nowrap overflow-hidden whitespace-nowrap truncate"
                         >
-                            {/* {selChatHistory[selChatHistory.length-1]?.text might scrap this idea later} */}
-                            {/* Will prob use this to do new message notif instead */}
-                        </p>
+                            NEW MESSAGE
+                        </p>) : (<></>)*/}
                     </button>
                 ))) : (
                     <p
-                    className='m-auto font-bold w-full text-center text-2xl mt-[2em]'
+                    className='m-auto font-bold w-full text-center text-2xl mt-[2em] text-nowrap overflow-hidden whitespace-nowrap truncate'
                     >
-                        No chats here
+                        No conversations available
                     </p>
                 ))}
             </div>
@@ -181,7 +200,7 @@ export default function Messages({ user, selChat, setSelChat }) {
             className='h-full sm:w-4/5 w-2/3 bg-indigo-100 flex flex-col'
             >   
                 <div
-                className='flex-1 flex flex-col bg-red-100 p-[1em] overflow-y-auto'
+                className={'flex-1 flex flex-col p-[1em] overflow-y-auto ' + ((selChatHistory) ? "bg-indigo-50" : "bg-zinc-50")}
                 >
                     {(selChatHistory && selChatHistory.length > 0) ? (selChatHistory.map((s, i) => (
                         <div

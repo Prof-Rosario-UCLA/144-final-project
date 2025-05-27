@@ -64,7 +64,7 @@ export default function FindNewChats({ user, setTab, setSelChat }) {
         className="w-full min-h-full max-h-max bg-sky-200 flex flex-row overflow-hidden"
         >
             <div
-            className="h-screen sm:w-2/3 md:w-1/2 w-full m-auto bg-transparent flex flex-col items-center p-[2em]"
+            className="h-screen sm:w-5/6 lg:w-1/2 w-full m-auto bg-transparent flex flex-col items-center p-[2em]"
             >
                 <div 
                 className="w-full sm:max-w-lg bg-zinc-100 rounded-2xl shadow-md sm:p-[1em] p-[.5em] text-center"
@@ -103,7 +103,7 @@ export default function FindNewChats({ user, setTab, setSelChat }) {
                         key={i}
                         >
                             <p
-                            className="text-xs sm:text-lg font-bold"
+                            className="text-xs sm:text-lg font-bold text-nowrap overflow-hidden whitespace-nowrap truncate"
                             >
                                 {q.username}
                             </p>

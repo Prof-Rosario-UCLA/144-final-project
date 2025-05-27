@@ -9,7 +9,7 @@ function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState("messages"); // default tab?
-  const [selChat, setSelChat] = useState([]);
+  const [selChat, setSelChat] = useState(null);
   // console.log(tab)
 
   const checkAuth = async () => {
