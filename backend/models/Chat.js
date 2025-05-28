@@ -12,10 +12,10 @@ const ChatSchema = new mongoose.Schema({
         }
     },
     createdAt: { type: Date, default: Date.now },
-    latestMessage: { type: mongoose.Schema.Types.ObjectId, ref: 'Message', required: true },
-    latestReadAt: [{
-        user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-        timestamp: { type: Date, default: Date.now }
+    latestMessage: { type: mongoose.Schema.Types.ObjectId, ref: 'Message', default: null},
+    latestRead: [{
+        user: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+        hasRead: { type: Boolean, default: false }
     }]
 });
 

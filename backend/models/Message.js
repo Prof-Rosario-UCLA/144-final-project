@@ -11,7 +11,8 @@ const MessageSchema = new mongoose.Schema({
     type: { type: String, enum: ['image','video','audio'] }
   }],
   isMedia: { type: Boolean, default: false },
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
+  // hasBeenRead: { type: Boolean, default: false }
 });
 
 module.exports = mongoose.model('Message', MessageSchema);
