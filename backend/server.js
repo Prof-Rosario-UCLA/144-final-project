@@ -75,9 +75,10 @@ io.on("connection", (socket) => {
   socket.on("private message", ({ content, to }) => {
     const targetId = socketMap.get(to);
     socket.to(targetId).emit("private message", {
-        content: content,
-        from: socket.userId,
-        fromUser: socket.username
+        // content: content,
+        // from: socket.userId,
+        // fromUser: socket.username
+        content: content // this should be a whole message Obj
     });
   });
 });
