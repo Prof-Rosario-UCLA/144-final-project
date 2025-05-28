@@ -7,12 +7,12 @@ routes for messages:
     -[DONE] send a msg (w/ or w/o media files) & emit to socket.io room
         -/upload for multimedia
     -[DONE] get msgs for some chat (up to a limit/before some time) -- pagination is a frontend deal
-    -add read flag maybe? depends on chat schema
+    -[DONE] add read flag maybe? depends on chat schema (this was done with a flag per chat participant)
 
 routes for chats:
     -[DONE] create chat or open current chat (upon req) 
     -[DONE] list all chats
-    -may need to overhaul and add lastMessageSent and lastTimeRead per chat for notif handling 
+    -[DONE] may need to overhaul and add lastMessageSent and lastTimeRead per chat for notif handling 
         -how much should be handled on FE
 
 
@@ -30,7 +30,8 @@ routes for users:
 socket stuff:
     -[DONE] when a msg object is emitted to the room, send it to all participants
     -[DONE] implement immediate update on rcv on frontend
-    -do notif feature and update order of displayed chats
+    -[DONE] do notif feature and update order of displayed chats
+    -figure out why socket isn't working in multiple laptops?
 
 SSO:
     -[DONE] Google Oauth
