@@ -289,7 +289,7 @@ export default function Messages({ user, selChat, setSelChat }) {
                         aria-label="Type a message"
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
-                        className="h-[3em] flex-1 px-4 py-2 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400 break-words leading-[1rem] resize-none"
+                        className="h-[3em] flex-1 px-4 py-2 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400 break-words leading-[2rem] resize-none"
                     />
                     <button
                         type="submit"
