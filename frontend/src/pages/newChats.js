@@ -61,7 +61,7 @@ export default function FindNewChats({ user, setTab, setSelChat }) {
  
     return (
         <div
-        className="w-full min-h-full max-h-max bg-sky-200 flex flex-row overflow-hidden"
+        className="w-full min-h-full max-h-max bg-sky-100 flex flex-row overflow-hidden"
         >
             <div
             className="h-screen sm:w-5/6 lg:w-1/2 w-full m-auto bg-transparent flex flex-col items-center p-[2em]"
@@ -87,7 +87,7 @@ export default function FindNewChats({ user, setTab, setSelChat }) {
                         />
                         <button
                             type="submit"
-                            className="sm:ml-[1em] ml-[.2em] sm:px-4 sm:py-2 p-[.5em] sm:text-lg text-xs bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="sm:ml-[1em] ml-[.2em] sm:px-4 sm:py-2 p-[.5em] sm:text-lg text-xs bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ease-linear duration-150"
                         >
                             Search
                         </button>
@@ -98,7 +98,7 @@ export default function FindNewChats({ user, setTab, setSelChat }) {
                 className="flex-1 w-full m-[1em] sm:mb-[4em] mb-[12em] overflow-y-auto sm:px-[3em] px-[.5em] sm:pt-[1em] pt-[.5em] rounded-xl border-slate-100 sm:border-[.3em] border-[.1em] "
                 >   
                     {(queryResult.length > 0) ? (queryResult.filter(q => q._id !== user._id).map((q, i) => (
-                        <button
+                        <div
                         className="sm:h-[5em] h-[3em] w-full py-2 sm:px-[3em] px-[1em] bg-zinc-100 flex items-center text-center flex-row rounded-full mb-[1em] shadow-md"
                         key={i}
                         >
@@ -107,8 +107,8 @@ export default function FindNewChats({ user, setTab, setSelChat }) {
                             >
                                 {q.username}
                             </p>
-                            <div
-                            className="rounded-full bg-green-500 hover:bg-green-700 p-2 flex items center justify-center cursor-pointer ml-auto transition-colors ease-linear duration-200"
+                            <button
+                            className="rounded-full bg-green-500 hover:bg-green-700 p-2 flex items center justify-center ml-auto transition-colors ease-linear duration-200"
                             >
                                 <p
                                 className="font-bold sm:text-lg text-xs"
@@ -116,8 +116,8 @@ export default function FindNewChats({ user, setTab, setSelChat }) {
                                 >
                                     ADD
                                 </p>
-                            </div>
-                        </button>
+                            </button>
+                        </div>
                     ))) : (
                         <p
                         className='m-auto font-bold w-full text-center text-2xl mt-[2em]'

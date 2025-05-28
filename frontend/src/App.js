@@ -127,7 +127,7 @@ function App() {
             </h2>
             <button 
               onClick={handleLogout}
-              className="px-2 py-2 ml-[1em] bg-gray-200 hover:bg-gray-300 rounded-md transition-colors"
+              className="px-[1.2em] py-2 ml-[1em] bg-red-500 hover:bg-red-600 rounded-md transition-colors text-white font-bold"
             >
               Logout
             </button>

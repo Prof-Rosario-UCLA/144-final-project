@@ -203,7 +203,7 @@ export default function Messages({ user, selChat, setSelChat }) {
                     return B.localeCompare(A);
                 }).map((c, i) => (
                     <button
-                    className={"sm:h-[8em] h-[5em] pl-[.5em] w-full p-2 py-4 hover:bg-violet-300 flex flex-col items-center justify-content text-center transition-colors ease-linear duration-100 border-b-2 border-black "  + ((c._id === selChat?._id) ? " bg-fuchsia-200": " bg-violet-200")}
+                    className={"sm:h-[8em] h-[5em] pl-[.5em] w-full p-2 py-4 hover:bg-violet-300 flex flex-col items-center justify-content text-center transition-colors ease-linear duration-100 border-b-2 border-black "  + ((c._id === selChat?._id) ? " bg-violet-400/90": " bg-violet-200/70")}
                     key={i}
                     onClick={(e) => handleSelChat(e, c)}
                     >
@@ -211,7 +211,7 @@ export default function Messages({ user, selChat, setSelChat }) {
                         className='flex flex-row w-full my-auto text-center items-center justify-center sm:mr-[.4em] mr-[.2em]'
                         >
                             <div 
-                            className={'sm:w-[.8em] sm:h-[.8em] w-[.4em] h-[.4em] rounded-full mr-[.5em] flex-shrink-0 transition-colors ease-linear duration-150 ' + ((!c?.latestRead?.find(l => l.user === user._id).hasRead || false) ? "bg-sky-700 animate-pulse" : "bg-transparent")}
+                            className={'sm:w-[.6em] sm:h-[.6em] w-[.4em] h-[.4em] rounded-full mr-[.5em] flex-shrink-0 transition-colors ease-linear duration-150 ' + ((!c?.latestRead?.find(l => l.user === user._id).hasRead || false) ? "bg-sky-700 animate-ping " : "bg-transparent")}
                             />
                             <h1
                             className="text-xs sm:text-lg md:text-xl font-bold text-nowrap text-center overflow-hidden whitespace-nowrap truncate"// mt-[.5em] sm:mt-[1em]"
@@ -294,7 +294,7 @@ export default function Messages({ user, selChat, setSelChat }) {
                     />
                     <button
                         type="submit"
-                        className="sm:ml-[1em] ml-[.2em] px-4 py-2 sm:text-lg text-xs bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="sm:ml-[1em] ml-[.2em] px-4 py-2 sm:text-lg text-xs bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ease-linear duration-150"
                     >
                         Send
                     </button>
