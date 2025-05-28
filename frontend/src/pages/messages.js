@@ -40,31 +40,35 @@ export default function Messages({ user, selChat, setSelChat }) {
         getMsgHistory(selChat._id, beforeTS)
     }, [])
 
-    socket.on("private message", ({content, from, fromUser}) => {
+    socket.on("private message", ({ content }) => {
         console.log("message emitted to socket room:", content)
-        if(from === user._id) return;
-        const newMsg = {
-            sender: {
-                _id: from,
-                username: fromUser
-            },
-            receiver: user._id,
-            text: content,
-            createdAt: (new Date()).toISOString()
+        if(content?.receiver === user._id) return;
+        // received from the current selected chat
+
+        if(!allUserChats.map(c => c._id).includes(content?.chat)) {
+            console.log("new message from new user! filling in new chat")
+            getAllChats();
         }
-        if(selChat.participants.find(p => p._id === from) !== undefined) {
-            // console.log("gotten from", fromUser)
-            setSelChatHistory([...selChatHistory, newMsg])
-            setAllUserChats([...moveToTop(allUserChats, selChat?._id)]);
+
+        if(selChat?.participants.find(p => p._id === content?.sender?._id) !== undefined) {
+            console.log("gotten from in sel'd chat:", content?.sender)
+            setSelChatHistory([...selChatHistory, content])
+            setAllUserChats(cur => cur.map(c => c._id === selChat?._id ? ({
+                ...c, 
+                latestMessage: content
+            }) : c))
+            markChatRead(selChat?._id)
         } else {
-            console.log("new msg not in sel'd from", fromUser)
-            // new msg functionality -- TBD
-            const newMsgChatObj = allUserChats.find(c => c.participants[0]._id === from || c.participants[1]._id === from)
-            console.log("NEW MSG INCOMING", newMsgChatObj)
-            if(newMsgChatObj ) {
-                setNewMsgs([...newMsgs, newMsgChatObj._id])
-                setAllUserChats([...moveToTop(allUserChats, newMsgChatObj._id)]);
-            }
+            console.log("new msg not in sel'd from", content?.sender)
+            setAllUserChats(cur => cur.map(c => c._id === content?.chat ? ({
+                ...c, 
+                latestMessage: content,
+                latestRead: c.latestRead.map(l => l.user === user._id ? {
+                    user: l.user,
+                    hasRead: false
+                } : l)
+            }) : c))
+
         }
     })
 
@@ -90,7 +94,7 @@ export default function Messages({ user, selChat, setSelChat }) {
 
     const sendMessage = async () => {
         try {
-            console.log(selChat)
+            console.log("sending message on this chat:", selChat)
             const resp = await fetch(`${API_URL}/api/messages/${selChat._id}`, {
                 method: 'POST',
                 headers: {
@@ -103,22 +107,17 @@ export default function Messages({ user, selChat, setSelChat }) {
                 })
             });
             const r = await resp.json()
-            console.log(r)
+            console.log("sendMessage resp:", r)
             // console.log(user)
-            setSelChatHistory([...selChatHistory, {
-                chat: selChat._id,
-                sender: user,
-                text: message,
-                createdAt: (new Date()).toISOString()
-                // media will be done later
-            }]);
+            setSelChatHistory([...selChatHistory, r?.message]);
+            setAllUserChats(cur => cur.map(c => c._id === r?.chat?._id ? r?.chat : c))
 
             socket.emit("private message", {
-                content: message,
+                content: r?.message,
                 to: selChat.participants.find(p => p._id !== user._id)._id
             });
         } catch(e) {
-            console.log("getAllChats error:", e)
+            console.log("sendMessage error:", e)
         }
     }
 
@@ -142,7 +141,27 @@ export default function Messages({ user, selChat, setSelChat }) {
             // console.log(chatId, beforeTS)
             setSelChatHistory(() => r)
         } catch(e) {
-            console.log("getAllChats error:", e)
+            console.log("getMsgHistory error:", e)
+        }
+    }
+
+    const markChatRead = async (chatId) => {
+        try {
+            const resp = await fetch(`${API_URL}/api/chats/${chatId}/read`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    userId: user._id
+                })
+            });
+            const r = await resp.json()
+            console.log("marked chat read", r)
+            // console.log(chatId, beforeTS)
+            setAllUserChats(cur => cur.map(c => c._id === r?._id ? r : c))
+        } catch(e) {
+            console.log("markChatRead error:", e)
         }
     }
 
@@ -150,9 +169,10 @@ export default function Messages({ user, selChat, setSelChat }) {
         setNewMsgs([...newMsgs.filter(m => m !== chat._id)])
         if(e) e.preventDefault();
         setSelChat(chat);
-        console.log("selChat", chat._id)
+        console.log("selChat", chat)
         const beforeTS = (new Date()).toISOString()
-        getMsgHistory(chat._id, beforeTS)
+        getMsgHistory(chat._id, beforeTS);
+        markChatRead(chat._id);
     }
 
     return (
@@ -168,25 +188,40 @@ export default function Messages({ user, selChat, setSelChat }) {
                     Your Conversations
                 </h1>
                 
-                {((allUserChats.length > 0) ? (allUserChats.map((c, i) => (
+                {((allUserChats.length > 0) ? (allUserChats.sort((a, b) => {
+                    const A = a.latestMessage.createdAt;
+                    const B = b.latestMessage.createdAt;
+                  
+                    const aIsNull = A == null;
+                    const bIsNull = B == null;
+                    if (aIsNull && !bIsNull) return -1;
+                    if (!aIsNull && bIsNull) return 1;
+                    if (aIsNull && bIsNull) return 0;
+                  
+                    return B.localeCompare(A);
+                }).map((c, i) => (
                     <button
-                    className={"sm:h-[8em] h-[5em] pl-[.5em] w-full p-2 bg-violet-200 hover:bg-violet-300 flex flex-row items-center justify content text-center transition-colors ease-linear duration-100 border-b-2 border-black"  + ((c._id === selChat?._id) ? " bg-fuchsia-300": " ")}
+                    className={"sm:h-[8em] h-[5em] pl-[.5em] w-full p-2 py-4 bg-violet-200 hover:bg-violet-300 flex flex-col items-center justify-content text-center transition-colors ease-linear duration-100 border-b-2 border-black"  + ((c._id === selChat?._id) ? " bg-fuchsia-300": " ")}
                     key={i}
                     onClick={(e) => handleSelChat(e, c)}
                     >
-                        <div 
-                        className={'sm:w-[.8em] sm:h-[.8em] w-[.4em] h-[.4em] rounded-full mr-[.5em] flex-shrink-0 transition-colors ease-linear duration-200 ' + ((newMsgs.includes(c._id)) ? "bg-sky-700" : "bg-transparent")}
-                        />
-                        <h1
-                        className="text-xs sm:text-lg font-bold text-nowrap overflow-hidden whitespace-nowrap truncate"// mt-[.5em] sm:mt-[1em]"
+                        <div
+                        className='flex flex-row w-full my-auto text-center items-center justify-center sm:mr-[.4em] mr-[.2em]'
                         >
-                            {c.participants.find(p => p._id !== user._id).username}
-                        </h1>
-                        {/*(newMsgs.includes(c._id)) ? (<p
-                        className="text-xs max-w-full sm:text-lg mt-[.5em] sm:mt-[1em] text-gray-600 text-nowrap overflow-hidden whitespace-nowrap truncate"
+                            <div 
+                            className={'sm:w-[.8em] sm:h-[.8em] w-[.4em] h-[.4em] rounded-full mr-[.5em] flex-shrink-0 transition-colors ease-linear duration-150 ' + ((!c?.latestRead?.find(l => l.user === user._id).hasRead || false) ? "bg-sky-700" : "bg-transparent")}
+                            />
+                            <h1
+                            className="text-xs sm:text-lg md:text-xl font-bold text-nowrap text-center overflow-hidden whitespace-nowrap truncate"// mt-[.5em] sm:mt-[1em]"
+                            >
+                                {c.participants.find(p => p._id !== user._id).username}
+                            </h1>
+                        </div>
+                        <p
+                        className={"text-xs max-w-full sm:text-md md:text-lg text-gray-600 text-nowrap overflow-hidden whitespace-nowrap truncate transition-all ease-linear duration-150 " + ((!c?.latestRead?.find(l => l.user === user._id).hasRead || false) ? "font-extrabold" : "font-medium")}
                         >
-                            NEW MESSAGE
-                        </p>) : (<></>)*/}
+                            {c.latestMessage?.text || ""}
+                        </p>
                     </button>
                 ))) : (
                     <p
@@ -210,12 +245,17 @@ export default function Messages({ user, selChat, setSelChat }) {
                             <h1
                             className='text-lg font-extrabold'
                             >
-                                {s?.sender?.username}
+                                {s?.sender?.username} &nbsp;&nbsp;
+                                <span
+                                className='font-light text-xs inline-block whitespace-normal break-words'
+                                > 
+                                    {`${s?.createdAt.substring(0, 10)} ${s?.createdAt.substring(12, 19)}`} 
+                                </span>
                             </h1>
                             <p
-                            className='whitespace-pre-wrap pl-[.5em]'
+                            className={'whitespace-pre-wrap px-[1.2em] py-[.3em] my-[.3em] w-fit rounded-lg ' + ((s?.sender._id === user._id) ? "bg-blue-300" : "bg-neutral-200")}
                             >
-                                {s.text}
+                                {s?.text}
                             </p>
                         </div>
                     ))) : (
@@ -238,6 +278,9 @@ export default function Messages({ user, selChat, setSelChat }) {
                 </div>
                 <form
                     onSubmit={(e) => handleSendMsg(e)}
+                    onKeyDown={(e) => {
+                        if(e.key === "Enter"&& !e.shiftKey) handleSendMsg(e);
+                    }}
                     className="flex items-center sm:p-[2em] p-[.5em] bg-indigo-50"
                     >
                     <textarea
