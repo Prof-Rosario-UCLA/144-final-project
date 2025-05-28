@@ -74,6 +74,7 @@ export default function Messages({ user, selChat, setSelChat }) {
 
     const getAllChats = async() => {
         try {
+            console.log("getAllChats with user:", user);
             const resp = await fetch(`${API_URL}/api/chats/${user._id}`, {
                 method: 'GET',
                 headers: {
@@ -85,7 +86,7 @@ export default function Messages({ user, selChat, setSelChat }) {
             // console.log(user)
             setAllUserChats(() => r)
         } catch(e) {
-            console.log("getAllChats error:", e)
+            console.log("getAllChats error:", e);
         }
     }
     useEffect(() => {
@@ -210,7 +211,7 @@ export default function Messages({ user, selChat, setSelChat }) {
                         className='flex flex-row w-full my-auto text-center items-center justify-center sm:mr-[.4em] mr-[.2em]'
                         >
                             <div 
-                            className={'sm:w-[.8em] sm:h-[.8em] w-[.4em] h-[.4em] rounded-full mr-[.5em] flex-shrink-0 transition-colors ease-linear duration-150 ' + ((!c?.latestRead?.find(l => l.user === user._id).hasRead || false) ? "bg-sky-700" : "bg-transparent")}
+                            className={'sm:w-[.8em] sm:h-[.8em] w-[.4em] h-[.4em] rounded-full mr-[.5em] flex-shrink-0 transition-colors ease-linear duration-150 ' + ((!c?.latestRead?.find(l => l.user === user._id).hasRead || false) ? "bg-sky-700 animate-pulse" : "bg-transparent")}
                             />
                             <h1
                             className="text-xs sm:text-lg md:text-xl font-bold text-nowrap text-center overflow-hidden whitespace-nowrap truncate"// mt-[.5em] sm:mt-[1em]"

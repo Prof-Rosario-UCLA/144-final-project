@@ -105,6 +105,7 @@ const verifyToken = (req, res, next) => {
 router.get('/me', verifyToken, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-passwordHash');
+    // console.log(user)
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -126,7 +127,7 @@ router.post('/validate-token', (req, res) => {
     res.json({ 
       valid: true, 
       user: {
-        id: decoded.id,
+        _id: decoded.id,
         username: decoded.username,
         email: decoded.email
       }
