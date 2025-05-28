@@ -117,6 +117,7 @@ export default function Messages({ user, selChat, setSelChat }) {
             }
 
             console.log("sending message on this chat:", selChat)
+            const isMedia = image != null;
             const resp = await fetch(`${API_URL}/api/messages/${selChat._id}`, {
                 method: 'POST',
                 headers: {
@@ -125,7 +126,9 @@ export default function Messages({ user, selChat, setSelChat }) {
                 body: JSON.stringify({
                     text: message,
                     sender: user._id,
-                    receiver: selChat.participants.find(p => p._id !== user._id)._id
+                    receiver: selChat.participants.find(p => p._id !== user._id)._id,
+                    media: image,
+                    isMedia,
                 })
             });
             const r = await resp.json()
@@ -278,7 +281,16 @@ export default function Messages({ user, selChat, setSelChat }) {
                             <p
                             className={'whitespace-pre-wrap px-[1.2em] py-[.3em] my-[.3em] w-fit rounded-lg ' + ((s?.sender._id === user._id) ? "bg-blue-300" : "bg-neutral-200")}
                             >
-                                {s?.text}
+
+                                {s?.isMedia ? (
+                                    <img
+                                    src={s?.media}
+                                    alt="Media message"
+                                    className="max-w-xs max-h-64 rounded-lg"
+                                    />
+                                ) : (
+                                    s?.text
+                                )}
                             </p>
                         </div>
                     ))) : (

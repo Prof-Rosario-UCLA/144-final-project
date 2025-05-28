@@ -61,7 +61,7 @@ router.post('/upload', async (req, res) => {
 router.post('/:chatId/', async (req, res) => {
     try {
         const { chatId } = req.params;
-        const { text, sender, receiver } = req.body;
+        const { text, sender, receiver, media, isMedia } = req.body;
 
         const newMsg = await Message.create({
             chat: chatId,
@@ -69,6 +69,8 @@ router.post('/:chatId/', async (req, res) => {
             receiver,
             text,
             // media will be done later
+            media,
+            isMedia,
         })
         
         const msg = await Message.findById(newMsg._id)
