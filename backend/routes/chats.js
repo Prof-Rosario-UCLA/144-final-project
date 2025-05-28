@@ -12,19 +12,56 @@ router.post('/', async (req, res) => {
 
         const key_search = participants[0] + "+" + participants[1]
 
-        let convo = await Chat.findOne({ name: key_search });
+        let convo = await Chat.findOne({ name: key_search }).populate({
+            path: 'lastMessage',
+            populate: {
+                path: 'sender',
+                select: 'username'
+            }
+        }).exec();
         if (!convo) convo = await Chat.create({ 
             name: key_search,
-            participants 
+            participants,
+            latestRead: participants.map(p => ({
+                user: p,
+                hasRead: true
+            }))
         });
         
         res.status(200).json(convo);
     } catch (err) {
       console.error(err);
-      res.status(500).json({ error: 'Server error' });
+      res.status(500).json({ message: 'Internal server error' });
     }
-  });
+});
 
+
+router.post('/:id/read', async (req, res) => {
+    try {
+        const chatId = req.params.id;
+        const userId = req.body.userId;
+
+        const newChat = await Chat.findByIdAndUpdate(chatId, {
+            $set: { "latestRead.$[elem].hasRead": true },
+        }, {
+            new: true,
+            arrayFilters: [{ "elem.user": userId }]
+        }).populate('participants', 'username')
+        .populate({
+            path: 'latestMessage',
+            populate: {
+                path: 'sender',
+                select: 'username'
+            }
+        }).exec();
+        // console.log(newChat)
+        
+        res.status(200).json(newChat)
+    } catch (err) {
+        console.error(err)
+        res.status(500).json({ message: 'Internal server error'})
+    }
+});
 
 // get all existing for me
 router.get('/:id', async (req, res) => {
@@ -32,13 +69,14 @@ router.get('/:id', async (req, res) => {
         // console.log(req.user, req.body)
         const me = req.params.id;
         const convos = await Chat
-                            .find({ participants: me })
-                            .populate('participants', 'username');
+        .find({ participants: me })
+        .populate('participants', 'username')
+        .populate('latestMessage', 'sender receiver text'); //add more later
 
         res.status(200).json(convos);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Server error' });
+        res.status(500).json({ message: 'Internal erver error' });
     }
 });
   
