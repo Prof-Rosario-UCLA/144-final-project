@@ -71,7 +71,7 @@ router.get('/:id', async (req, res) => {
         const convos = await Chat
         .find({ participants: me })
         .populate('participants', 'username')
-        .populate('latestMessage', 'sender receiver text'); //add more later
+        .populate('latestMessage', 'sender receiver text createdAt'); //add more later
 
         res.status(200).json(convos);
     } catch (err) {

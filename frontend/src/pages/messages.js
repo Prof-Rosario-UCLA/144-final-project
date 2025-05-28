@@ -42,7 +42,7 @@ export default function Messages({ user, selChat, setSelChat }) {
 
     socket.on("private message", ({ content }) => {
         console.log("message emitted to socket room:", content)
-        if(content?.receiver === user._id) return;
+        if(content?.sender?._id === user._id) return;
         // received from the current selected chat
 
         if(!allUserChats.map(c => c._id).includes(content?.chat)) {
