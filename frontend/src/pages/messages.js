@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { API_URL } from '../constants'
 import { io } from "socket.io-client";
+import WebcamComp from './webcam';
 
 export default function Messages({ user, selChat, setSelChat }) {
     const [message, setMessage] = useState("");
+    const [image, setImage] = useState(null);
     const [allUserChats, setAllUserChats] = useState([]);
     const [chatHistories, setChatHistories] = useState({})
     // const [selChat, setSelChat] = useState([]);
@@ -95,6 +97,25 @@ export default function Messages({ user, selChat, setSelChat }) {
 
     const sendMessage = async () => {
         try {
+            // if image != null, then add to object storage, get url, and then send that to backend
+            let imageUrl = "";
+            if (image) {
+                const imageResp = await fetch(`${API_URL}/api/messages/upload`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        image: image,
+                    })
+                })
+                const uploadResp = await imageResp.json();
+                if (uploadResp.success) {
+                    console.log("image was uploaded to cloud succesfully");
+                    imageUrl = uploadResp.url;
+                }
+            }
+
             console.log("sending message on this chat:", selChat)
             const resp = await fetch(`${API_URL}/api/messages/${selChat._id}`, {
                 method: 'POST',
@@ -278,27 +299,35 @@ export default function Messages({ user, selChat, setSelChat }) {
                     ref={scrollBottom}
                     />
                 </div>
-                <form
-                    onSubmit={(e) => handleSendMsg(e)}
-                    onKeyDown={(e) => {
-                        if(e.key === "Enter"&& !e.shiftKey) handleSendMsg(e);
-                    }}
-                    className="flex items-center sm:p-[2em] p-[.5em] bg-indigo-50"
-                    >
-                    <textarea
-                        type="text"
-                        aria-label="Type a message"
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        className="h-[3em] flex-1 px-4 py-2 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400 break-words leading-[2rem] resize-none"
-                    />
-                    <button
-                        type="submit"
-                        className="sm:ml-[1em] ml-[.2em] px-4 py-2 sm:text-lg text-xs bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ease-linear duration-150"
-                    >
-                        Send
-                    </button>
-                </form>
+                {selChat && 
+                    <form
+                        onSubmit={(e) => handleSendMsg(e)}
+                        onKeyDown={(e) => {
+                            if(e.key === "Enter"&& !e.shiftKey) handleSendMsg(e);
+                        }}
+                        className="flex items-center sm:p-[2em] p-[.5em] bg-indigo-50"
+                        >
+                        <WebcamComp
+                            image={image}
+                            setImage={setImage}
+                            onImageCaptured={(img) => setImage(img)}
+                        />
+                        {image && <img src={image} alt="Captured" className="rounded-lg mt-4" />}
+                        <textarea
+                            type="text"
+                            aria-label="Type a message"
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                            className="h-[3em] flex-1 px-4 py-2 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400 break-words leading-[2rem] resize-none"
+                        />
+                        <button
+                            type="submit"
+                            className="sm:ml-[1em] ml-[.2em] px-4 py-2 sm:text-lg text-xs bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ease-linear duration-150"
+                        >
+                            Send
+                        </button>
+                    </form>
+                }
             </div>
         </div>
     )
