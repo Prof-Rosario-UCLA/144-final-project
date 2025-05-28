@@ -13,7 +13,7 @@ router.post('/', async (req, res) => {
         const key_search = participants[0] + "+" + participants[1]
 
         let convo = await Chat.findOne({ name: key_search }).populate({
-            path: 'lastMessage',
+            path: 'latestMessage',
             populate: {
                 path: 'sender',
                 select: 'username'
