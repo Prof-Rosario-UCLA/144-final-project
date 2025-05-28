@@ -173,6 +173,7 @@ export default function Messages({ user, selChat, setSelChat }) {
         const beforeTS = (new Date()).toISOString()
         getMsgHistory(chat._id, beforeTS);
         markChatRead(chat._id);
+        // console.log("allChats", allUserChats)
     }
 
     return (
@@ -201,7 +202,7 @@ export default function Messages({ user, selChat, setSelChat }) {
                     return B.localeCompare(A);
                 }).map((c, i) => (
                     <button
-                    className={"sm:h-[8em] h-[5em] pl-[.5em] w-full p-2 py-4 bg-violet-200 hover:bg-violet-300 flex flex-col items-center justify-content text-center transition-colors ease-linear duration-100 border-b-2 border-black"  + ((c._id === selChat?._id) ? " bg-fuchsia-300": " ")}
+                    className={"sm:h-[8em] h-[5em] pl-[.5em] w-full p-2 py-4 hover:bg-violet-300 flex flex-col items-center justify-content text-center transition-colors ease-linear duration-100 border-b-2 border-black "  + ((c._id === selChat?._id) ? " bg-fuchsia-200": " bg-violet-200")}
                     key={i}
                     onClick={(e) => handleSelChat(e, c)}
                     >
