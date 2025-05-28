@@ -137,6 +137,32 @@ router.post('/validate-token', (req, res) => {
   }
 });
 
+router.patch('/username', verifyToken, async (req, res) => {
+  try {
+    const { newuser } = req.body;
+
+    if (!newuser || newuser.trim().length === 0) {
+      return res.status(400).json({ message: 'New username is required' });
+    }
+
+    const existing = await User.findOne({ username: newuser });
+    if (existing) {
+      return res.status(409).json({ message: 'Username already taken' });
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { username: newuser },
+      { new: true, runValidators: true }
+    ).select('-passwordHash');
+
+    res.status(200).json({ message: 'Username updated', user });
+  } catch (error) {
+    console.error('Error updating username:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 router.get('/', async (req, res) => {
   try {
     const users = await User.find({})

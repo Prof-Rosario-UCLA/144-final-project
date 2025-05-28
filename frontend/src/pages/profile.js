@@ -6,7 +6,31 @@ export default function Profile({ user }) {
     const [error, setError] = useState("");
     const [isSaving, setIsSaving] = useState(false);
 
-    const handleSubmit = () => {};
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const token = localStorage.getItem('auth_token');
+
+        if (!token) {
+            return;
+        }
+
+        const resp = await fetch(`${API_URL}/api/users/username`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                newuser: username,
+            })
+        });
+        const r = await resp.json();
+        if (resp.status !== 200) {
+            setError("Username already taken!");
+        } else {
+            setError("");
+        }
+    };
     const onCancel = () => {};
 
     return (
@@ -17,7 +41,7 @@ export default function Profile({ user }) {
             className="w-full max-w-md bg-zinc-100 rounded-2xl shadow-md p-6 text-center mb-[5rem]"
             >
                 <form
-                onSubmit={handleSubmit}
+                onSubmit={(e) => { handleSubmit(e)}}
                 className="max-w-md mx-auto p-6 bg-transparent rounded-2xl"
                 >
                     <label
