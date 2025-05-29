@@ -100,9 +100,9 @@ function App() {
           className="bg-slate-50 shadow-sm p-4 flex sm:flex-row flex-col flex-wrap justify-between items-center flex-shrink-0 w-full min-w-screen border-black border-b-2"
           >
             <h1 
-            className="text-xl font-bold text-violet-900 ml-[1em]"
+            className="text-2xl font-bold text-violet-900 ml-[1em]"
             >
-              Company Name
+              DoolahiChat
             </h1>
 
             <h2 

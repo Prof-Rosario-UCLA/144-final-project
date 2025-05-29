@@ -2,10 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import { API_URL } from '../constants'
 import { io } from "socket.io-client";
 import WebcamComp from './webcam';
+import AudioRecorder from './audiorecord';
 
 export default function Messages({ user, selChat, setSelChat }) {
     const [message, setMessage] = useState("");
     const [image, setImage] = useState(null);
+    const [audio, setAudio] = useState(null);
     const [allUserChats, setAllUserChats] = useState([]);
     const [chatHistories, setChatHistories] = useState({})
     // const [selChat, setSelChat] = useState([]);
@@ -288,15 +290,14 @@ export default function Messages({ user, selChat, setSelChat }) {
                             className={'whitespace-pre-wrap px-[1.2em] my-[.3em] w-fit rounded-lg ' + ((s?.sender._id === user._id) ? "bg-blue-300 " : "bg-neutral-200 ") + ((s?.isMedia) ? " py-[1.2em] " : " py-[.3em] ")}
                             >
 
-                                {s?.isMedia ? (
+                                {s?.isMedia && (
                                     <img
                                     src={s?.media}
                                     alt="Media message"
                                     className="max-w-xs max-h-64 rounded-lg"
                                     />
-                                ) : (
-                                    s?.text || " "
                                 )}
+                                    {s?.text}
                             </p>
                         </div>
                     ))) : (
@@ -325,11 +326,14 @@ export default function Messages({ user, selChat, setSelChat }) {
                         }}
                         className="flex items-center sm:p-[2em] p-[.5em] bg-indigo-50"
                         >
-                        <WebcamComp
+                        {!audio && <WebcamComp
                             image={image}
                             setImage={setImage}
                             onImageCaptured={(img) => setImage(img)}
-                        />
+                        />}
+                        {!image && <AudioRecorder
+                            onAudioCaptured={(audio) => setAudio(audio)}
+                        />}
                         <textarea
                             type="text"
                             aria-label="Type a message"
