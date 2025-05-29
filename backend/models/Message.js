@@ -7,7 +7,11 @@ const MessageSchema = new mongoose.Schema({
   receiver: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   text: String,
   media: String,         
-  isMedia: { type: Boolean, default: false },
+  isMedia: {
+    type: String,
+    enum: ["none", "image", "audio"],
+    default: "none"
+  },
   createdAt: { type: Date, default: Date.now },
   // hasBeenRead: { type: Boolean, default: false }
 });

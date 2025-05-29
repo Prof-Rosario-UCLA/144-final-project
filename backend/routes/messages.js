@@ -33,20 +33,35 @@ router.get('/:chatId/:before', async (req, res) => {
 
 router.post('/upload', async (req, res) => {
   try {
-    const { image } = req.body;
-    if ( !image ) {
-      res.status(400).json({ error: 'Image not provided', sucess: false });
+    const { mediaUrl, isImage } = req.body;
+    if ( !mediaUrl ) {
+      res.status(400).json({ error: 'Media not provided', sucess: false });
     }
-    const buffer = Buffer.from(image.replace(/^data:image\/\w+;base64,/, ''), 'base64');
-    const fileName = `chat-images/${Date.now()}-${Math.random().toString(36).substring(7)}.jpg`;
-    const file = storage.bucket(bucketName).file(fileName);
 
-    await file.save(buffer, {
-      contentType: 'image/jpeg',
-      metadata: {
-        cacheControl: 'public, max-age=31536000',
-      },
-    });
+    let file = null;
+    let fileName = null;
+
+    if (isImage) {
+      const buffer = Buffer.from(mediaUrl.replace(/^data:image\/\w+;base64,/, ''), 'base64');
+      fileName = `chat-images/${Date.now()}-${Math.random().toString(36).substring(7)}.jpg`;
+      file = storage.bucket(bucketName).file(fileName);
+      await file.save(buffer, {
+        contentType: 'image/jpeg',
+        metadata: {
+          cacheControl: 'public, max-age=31536000',
+        },
+      });
+    } else {
+      const buffer = Buffer.from(mediaUrl.replace(/^data:audio\/\w+;base64,/, ''), 'base64');
+      fileName = `chat-images/${Date.now()}-${Math.random().toString(36).substring(7)}.webm`;
+      file = storage.bucket(bucketName).file(fileName);
+      await file.save(buffer, {
+        contentType: 'audio/webm',
+        metadata: {
+          cacheControl: 'public, max-age=31536000',
+        },
+      });
+    }
 
     const publicUrl = `https://storage.googleapis.com/${bucketName}/${fileName}`;
     res.status(200).json({ url: publicUrl, sucess: true });

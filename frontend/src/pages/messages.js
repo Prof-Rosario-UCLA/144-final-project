@@ -108,19 +108,51 @@ export default function Messages({ user, selChat, setSelChat }) {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        image: image,
+                        mediaUrl: image,
+                        isImage: true,
                     })
                 })
                 const uploadResp = await imageResp.json();
-                if (uploadResp.success) {
+                if (uploadResp.sucess) {
                     console.log("image was uploaded to cloud succesfully");
                     imageUrl = uploadResp.url;
                 }
             }
 
-            console.log("sending message on this chat:", selChat)
-            const isMedia = image !== null;
-            if (!isMedia && message === "") return
+            let audioUrl = "";
+            if (audio) {
+                const audioResp = await fetch(`${API_URL}/api/messages/upload`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        mediaUrl: audio,
+                        isImage: false
+                    })
+                })
+                const uploadResp = await audioResp.json();
+                if (uploadResp.sucess) {
+                    console.log("Audio was uploaded to cloud successfully");
+                    audioUrl = uploadResp.url;
+                }
+            }
+            
+            console.log("sending message on this chat:", selChat);
+            let isMedia = "none";
+            let mediaUrl = "";
+
+            if (imageUrl !== "") {
+                mediaUrl = imageUrl;
+                isMedia = "image";
+            } else if (audioUrl !== "") {
+                mediaUrl = audioUrl;
+                isMedia = "audio";
+            }
+
+
+            if (isMedia === "none" && message === "") return
+
             const resp = await fetch(`${API_URL}/api/messages/${selChat._id}`, {
                 method: 'POST',
                 headers: {
@@ -130,7 +162,7 @@ export default function Messages({ user, selChat, setSelChat }) {
                     text: message,
                     sender: user._id,
                     receiver: selChat.participants.find(p => p._id !== user._id)._id,
-                    media: image,
+                    media: mediaUrl,
                     isMedia,
                 })
             });
@@ -292,13 +324,20 @@ export default function Messages({ user, selChat, setSelChat }) {
                             className={'whitespace-pre-wrap px-[1.2em] pt-[1.2em] my-[.3em] w-fit rounded-lg ' + ((s?.sender._id === user._id) ? "bg-blue-300 " : "bg-neutral-200 ") + ((s?.isMedia && s?.text === "")  ? " py-[1.2em] " : " py-[.3em] ")}
                             >
 
-                                {s?.isMedia && (
+                                {s?.isMedia === "image" && (
                                     <img
                                     src={s?.media}
                                     alt="Media message"
                                     className={"max-w-xs max-h-64 rounded-lg " + (s?.text !== "" && " pb-[.3em]")}
                                     />
                                 )} 
+                                { s?.isMedia === "audio" && (
+                                    <audio
+                                        controls
+                                        src={s?.media}
+                                        className="max-w-xs rounded-lg"
+                                    />
+                                )}
                                 {s?.text}
                             </p>
                         </div>
@@ -334,7 +373,23 @@ export default function Messages({ user, selChat, setSelChat }) {
                             onImageCaptured={(img) => setImage(img)}
                         />}
                         {!image && <AudioRecorder
-                            onAudioCaptured={(audio) => setAudio(audio)}
+                            onAudioCaptured={(audio) => {
+                                console.log("pranav log in audio capture");
+                                if (audio === null) {
+                                    setAudio(null);
+                                    return;
+                                }
+
+                                console.log("pranav log in audio capture 2");
+
+                                const reader = new FileReader();
+                                reader.onloadend = () => {
+                                    const base64Audio = reader.result;
+                                    setAudio(base64Audio);
+                                };
+                                reader.readAsDataURL(audio);                           
+                            }
+                        }
                         />}
                         <textarea
                             type="text"
