@@ -120,6 +120,7 @@ export default function Messages({ user, selChat, setSelChat }) {
 
             console.log("sending message on this chat:", selChat)
             const isMedia = image !== null;
+            if (!isMedia && message === "") return
             const resp = await fetch(`${API_URL}/api/messages/${selChat._id}`, {
                 method: 'POST',
                 headers: {
@@ -149,6 +150,7 @@ export default function Messages({ user, selChat, setSelChat }) {
     }
 
     const handleSendMsg = (e) => {
+        console.log("handleSendMsg")
         e.preventDefault();
         sendMessage();
         setAllUserChats([...moveToTop(allUserChats, selChat?._id)]);
@@ -287,17 +289,17 @@ export default function Messages({ user, selChat, setSelChat }) {
                                 </span>
                             </h1>
                             <p
-                            className={'whitespace-pre-wrap px-[1.2em] my-[.3em] w-fit rounded-lg ' + ((s?.sender._id === user._id) ? "bg-blue-300 " : "bg-neutral-200 ") + ((s?.isMedia) ? " py-[1.2em] " : " py-[.3em] ")}
+                            className={'whitespace-pre-wrap px-[1.2em] pt-[1.2em] my-[.3em] w-fit rounded-lg ' + ((s?.sender._id === user._id) ? "bg-blue-300 " : "bg-neutral-200 ") + ((s?.isMedia && s?.text === "")  ? " py-[1.2em] " : " py-[.3em] ")}
                             >
 
                                 {s?.isMedia && (
                                     <img
                                     src={s?.media}
                                     alt="Media message"
-                                    className="max-w-xs max-h-64 rounded-lg"
+                                    className={"max-w-xs max-h-64 rounded-lg " + (s?.text !== "" && " pb-[.3em]")}
                                     />
-                                )}
-                                    {s?.text}
+                                )} 
+                                {s?.text}
                             </p>
                         </div>
                     ))) : (

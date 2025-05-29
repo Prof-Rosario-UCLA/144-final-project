@@ -63,6 +63,8 @@ router.post('/:chatId/', async (req, res) => {
         const { chatId } = req.params;
         const { text, sender, receiver, media, isMedia } = req.body;
 
+        console.log("posting a new message", req.body)
+
         const newMsg = await Message.create({
             chat: chatId,
             sender,
