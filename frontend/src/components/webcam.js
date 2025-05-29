@@ -13,11 +13,11 @@ export default function WebcamComp({ onImageCaptured }) {
   };
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center max-w-sm">
       {!showWebcam && !image && (
         <button
           onClick={() => setShowWebcam(true)}
-          className="sm:ml-[1em] mr-[1em] px-4 py-2 sm:text-lg text-xs bg-blue-100 hover:bg-blue-600 text-white font-semibold rounded-xl cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="px-4 py-2 sm:text-lg text-xs bg-purple-300 hover:bg-purple-400 text-white font-semibold rounded-xl cursor-pointer focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors ease-linear duration-150"
         >
           📷 
         </button>
@@ -29,33 +29,37 @@ export default function WebcamComp({ onImageCaptured }) {
             audio={false}
             ref={webcamRef}
             screenshotFormat="image/jpeg"
-            className="rounded-lg mt-4"
+            className="rounded-lg mt-[.6em] border-[.3em] border-slate-800"
           />
-          <button
-            onClick={captureWebcam}
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg"
+          <div
+          className="flex flex-row items-center justify-center sm:space-x-[4em] space-x-[.5em]"
           >
-            Capture
-          </button>
-          <button
-            onClick={() => setShowWebcam(false)}
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg"
-          >
-            Hide
-          </button>
+            <button
+              onClick={captureWebcam}
+              className="mt-4 px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg sm:text-lg text-xs transition-colors ease-linear duration-150"
+            >
+              Capture
+            </button>
+            <button
+              onClick={() => setShowWebcam(false)}
+              className="mt-4 px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg sm:text-lg text-xs transition-colors ease-linear duration-150"
+            >
+              Hide
+            </button>
+          </div>
         </>
       )}
 
       {image && (
         <>
-          <img src={image} alt="Captured" className="rounded-lg mt-4" />
+          <img src={image} alt="Captured" className="rounded-lg mt-[.6em] border-[.3em] border-slate-800" />
           <button
             onClick={() => {
               setImage(null);
-              setShowWebcam(false);
-                onImageCaptured?.(null);
+              setShowWebcam(true);
+              onImageCaptured?.(null);
             }}
-            className="mt-4 px-4 py-2 bg-gray-600 text-white rounded-lg"
+            className="mt-4 px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg transition-colors ease-linear duration-150"
           >
             🔁 Retake
           </button>

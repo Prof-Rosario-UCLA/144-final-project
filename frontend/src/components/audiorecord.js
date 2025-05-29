@@ -42,7 +42,7 @@ export default function AudioRecorder({ onAudioCaptured }) {
       {!recording && !audioBlob && (
         <button
           onClick={startRecording}
-        className="sm:ml-[1em] mr-[1em] px-4 py-2 sm:text-lg text-xs bg-blue-100 hover:bg-blue-600 text-white font-semibold rounded-xl cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="px-4 py-2 sm:text-lg text-xs bg-purple-300 hover:bg-purple-400 text-white font-semibold rounded-xl cursor-pointer focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors ease-linear duration-150"
         >
           🎙️
         </button>
@@ -51,7 +51,7 @@ export default function AudioRecorder({ onAudioCaptured }) {
       {recording && (
         <button
           onClick={stopRecording}
-          className="px-4 py-2 mr-[1em] bg-red-600 text-white rounded-lg"
+          className="px-4 py-2 mr-[1em] bg-red-600 hover:bg-red-500 text-white rounded-lg transition-colors ease-linear duration-150"
         >
           ⏹️
         </button>
@@ -62,9 +62,9 @@ export default function AudioRecorder({ onAudioCaptured }) {
           <audio controls src={URL.createObjectURL(audioBlob)} className="mt-2" />
           <button
             onClick={reset}
-            className="px-4 py-2 bg-gray-600 text-white rounded-lg"
+            className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg transition-colors ease-linear duration-150"
           >
-            🔁 
+            Cancel
           </button>
         </>
       )}
