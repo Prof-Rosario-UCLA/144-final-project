@@ -99,7 +99,7 @@ export default function Login({ onLoginSuccess }) {
             <h1 
             className="text-[4rem] font-bold mb-[1em] text-violet-900 text-center"
             >
-                Company Name
+                DoolahiChat
             </h1>
             <div 
             className="w-full max-w-sm bg-white rounded-2xl shadow-md p-6"

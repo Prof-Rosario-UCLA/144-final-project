@@ -28,10 +28,10 @@ export default function Profile({ user }) {
         if (resp.status !== 200) {
             setError("Username already taken!");
         } else {
+            window.location.reload();
             setError("");
         }
     };
-    const onCancel = () => {};
 
     return (
         <div
@@ -65,7 +65,7 @@ export default function Profile({ user }) {
                     <div className="flex justify-end space-x-3">
                         <button
                         type="button"
-                        onClick={onCancel}
+                        onClick={() => setUsername(user.username)}
                         disabled={isSaving}
                         className="px-5 py-2 bg-sky-200 hover:bg-sky-300 text-sky-800 font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-300 disabled:opacity-50 transition"
                         >

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { API_URL } from '../constants'
 import { io } from "socket.io-client";
-import WebcamComp from './webcam';
-import AudioRecorder from './audiorecord';
+import WebcamComp from '../components/webcam';
+import AudioRecorder from '../components/audiorecord';
 
 export default function Messages({ user, selChat, setSelChat }) {
     const [message, setMessage] = useState("");
@@ -86,7 +86,7 @@ export default function Messages({ user, selChat, setSelChat }) {
                 }
             });
             const r = await resp.json()
-            // console.log(r)
+            console.log("allchats:", r)
             // console.log(user)
             setAllUserChats(() => r)
         } catch(e) {
@@ -285,7 +285,7 @@ export default function Messages({ user, selChat, setSelChat }) {
                             {
                                 ((c?.latestMessage === null) ? 
                                 "" : 
-                                ((c?.latestMessage?.isMedia) ? 
+                                ((c?.latestMessage?.isMedia !== "none") ? 
                                 "Media Attached" : 
                                 c.latestMessage?.text || "Empty Message"))
                             }
@@ -313,7 +313,7 @@ export default function Messages({ user, selChat, setSelChat }) {
                             <h1
                             className='text-lg font-extrabold'
                             >
-                                {s?.sender?.username} &nbsp;&nbsp;
+                                {s?.sender?.username} &nbsp;&nbsp;&nbsp;&nbsp;
                                 <span
                                 className='font-light text-xs inline-block whitespace-normal break-words'
                                 > 
@@ -321,7 +321,7 @@ export default function Messages({ user, selChat, setSelChat }) {
                                 </span>
                             </h1>
                             <p
-                            className={'whitespace-pre-wrap px-[1.2em] pt-[1.2em] my-[.3em] w-fit rounded-lg ' + ((s?.sender._id === user._id) ? "bg-blue-300 " : "bg-neutral-200 ") + ((s?.isMedia && s?.text === "")  ? " py-[1.2em] " : " py-[.3em] ")}
+                            className={'whitespace-pre-wrap font-semibold px-[1.2em] my-[.3em] w-fit rounded-lg ' + ((s?.sender._id === user._id) ? "bg-blue-300 " : "bg-neutral-200 ") + ((s?.isMedia !== "none" && s?.text === "")  ? " py-[1.2em] " : " py-[.3em] ") + (s?.isMedia !== "none" && " pt-[1.2em]")}
                             >
 
                                 {s?.isMedia === "image" && (
@@ -335,7 +335,7 @@ export default function Messages({ user, selChat, setSelChat }) {
                                     <audio
                                         controls
                                         src={s?.media}
-                                        className="max-w-xs rounded-lg"
+                                        className={"max-w-xs rounded-lg " + (s?.text !== "" && " pb-[.3em]")}
                                     />
                                 )}
                                 {s?.text}
