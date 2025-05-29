@@ -117,7 +117,7 @@ export default function Messages({ user, selChat, setSelChat }) {
             }
 
             console.log("sending message on this chat:", selChat)
-            const isMedia = image != null;
+            const isMedia = image !== null;
             const resp = await fetch(`${API_URL}/api/messages/${selChat._id}`, {
                 method: 'POST',
                 headers: {
@@ -215,8 +215,8 @@ export default function Messages({ user, selChat, setSelChat }) {
                 </h1>
                 
                 {((allUserChats.length > 0) ? (allUserChats.sort((a, b) => {
-                    const A = a.latestMessage.createdAt;
-                    const B = b.latestMessage.createdAt;
+                    const A = a?.latestMessage?.createdAt;
+                    const B = b?.latestMessage?.createdAt;
                   
                     const aIsNull = A == null;
                     const bIsNull = B == null;
@@ -246,7 +246,13 @@ export default function Messages({ user, selChat, setSelChat }) {
                         <p
                         className={"text-xs max-w-full sm:text-md md:text-lg text-gray-600 text-nowrap overflow-hidden whitespace-nowrap truncate transition-all ease-linear duration-150 " + ((!c?.latestRead?.find(l => l.user === user._id).hasRead || false) ? "font-extrabold" : "font-medium")}
                         >
-                            {c.latestMessage?.text || ""}
+                            {
+                                ((c?.latestMessage === null) ? 
+                                "" : 
+                                ((c?.latestMessage?.isMedia) ? 
+                                "Media Attached" : 
+                                c.latestMessage?.text || "Empty Message"))
+                            }
                         </p>
                     </button>
                 ))) : (
@@ -279,7 +285,7 @@ export default function Messages({ user, selChat, setSelChat }) {
                                 </span>
                             </h1>
                             <p
-                            className={'whitespace-pre-wrap px-[1.2em] py-[.3em] my-[.3em] w-fit rounded-lg ' + ((s?.sender._id === user._id) ? "bg-blue-300" : "bg-neutral-200")}
+                            className={'whitespace-pre-wrap px-[1.2em] my-[.3em] w-fit rounded-lg ' + ((s?.sender._id === user._id) ? "bg-blue-300 " : "bg-neutral-200 ") + ((s?.isMedia) ? " py-[1.2em] " : " py-[.3em] ")}
                             >
 
                                 {s?.isMedia ? (
@@ -289,7 +295,7 @@ export default function Messages({ user, selChat, setSelChat }) {
                                     className="max-w-xs max-h-64 rounded-lg"
                                     />
                                 ) : (
-                                    s?.text
+                                    s?.text || " "
                                 )}
                             </p>
                         </div>
@@ -324,7 +330,6 @@ export default function Messages({ user, selChat, setSelChat }) {
                             setImage={setImage}
                             onImageCaptured={(img) => setImage(img)}
                         />
-                        {image && <img src={image} alt="Captured" className="rounded-lg mt-4" />}
                         <textarea
                             type="text"
                             aria-label="Type a message"
