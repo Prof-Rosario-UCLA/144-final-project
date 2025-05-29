@@ -1,16 +1,19 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Webcam from 'react-webcam';
 
-export default function WebcamComp({ onImageCaptured }) {
+export default function WebcamComp({ onImageCaptured, showWebcam, setShowWebcam, image, setImage }) {
   const webcamRef = useRef(null);
-  const [image, setImage] = useState(null);
-  const [showWebcam, setShowWebcam] = useState(false);
+  // const [image, setImage] = useState(null);
 
   const captureWebcam = () => {
     const screenshot = webcamRef.current.getScreenshot();
     setImage(screenshot);
     onImageCaptured?.(screenshot);
   };
+
+  useEffect(() => {
+      console.log("pranav is fat");
+  }, [showWebcam])
 
   return (
     <div className="flex flex-col items-center max-w-sm">

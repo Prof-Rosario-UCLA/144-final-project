@@ -9,7 +9,8 @@ export default function Messages({ user, selChat, setSelChat }) {
     const [image, setImage] = useState(null);
     const [audio, setAudio] = useState(null);
     const [allUserChats, setAllUserChats] = useState([]);
-    const [chatHistories, setChatHistories] = useState({})
+    const [chatHistories, setChatHistories] = useState({});
+    const [showWebcam, setShowWebcam] = useState(false);
     // const [selChat, setSelChat] = useState([]);
     const [selChatHistory, setSelChatHistory] = useState(null);
     const [newMsgs, setNewMsgs] = useState([]);
@@ -30,6 +31,10 @@ export default function Messages({ user, selChat, setSelChat }) {
     useEffect(() => {
         scrollBottom?.current?.scrollIntoView({ behavior: 'smooth' })
     }, [selChatHistory])
+
+    // useEffect(() => {
+    //     console.log("pranav is fat");
+    // }, [showWebcam])
 
     useEffect(() => {
         socket.connect();
@@ -184,6 +189,8 @@ export default function Messages({ user, selChat, setSelChat }) {
     const handleSendMsg = (e) => {
         console.log("handleSendMsg")
         e.preventDefault();
+        setShowWebcam(false);
+        setImage(null);
         sendMessage();
         setAllUserChats([...moveToTop(allUserChats, selChat?._id)]);
         setMessage("");
@@ -371,16 +378,15 @@ export default function Messages({ user, selChat, setSelChat }) {
                             image={image}
                             setImage={setImage}
                             onImageCaptured={(img) => setImage(img)}
+                            showWebcam={showWebcam}
+                            setShowWebcam={setShowWebcam}
                         />}
                         {!image && <AudioRecorder
                             onAudioCaptured={(audio) => {
-                                console.log("pranav log in audio capture");
                                 if (audio === null) {
                                     setAudio(null);
                                     return;
                                 }
-
-                                console.log("pranav log in audio capture 2");
 
                                 const reader = new FileReader();
                                 reader.onloadend = () => {
