@@ -11,6 +11,8 @@ export default function Messages({ user, selChat, setSelChat }) {
     const [allUserChats, setAllUserChats] = useState([]);
     const [chatHistories, setChatHistories] = useState({});
     const [showWebcam, setShowWebcam] = useState(false);
+    const [recording, setRecording] = useState(false);
+    const [audioUrll, setAudioUrll] = useState(null);
     // const [selChat, setSelChat] = useState([]);
     const [selChatHistory, setSelChatHistory] = useState(null);
     const [newMsgs, setNewMsgs] = useState([]);
@@ -32,9 +34,6 @@ export default function Messages({ user, selChat, setSelChat }) {
         scrollBottom?.current?.scrollIntoView({ behavior: 'smooth' })
     }, [selChatHistory])
 
-    // useEffect(() => {
-    //     console.log("pranav is fat");
-    // }, [showWebcam])
 
     useEffect(() => {
         socket.connect();
@@ -132,7 +131,7 @@ export default function Messages({ user, selChat, setSelChat }) {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        mediaUrl: audio,
+                        mediaUrl: audioUrll,
                         isImage: false
                     })
                 })
@@ -189,11 +188,14 @@ export default function Messages({ user, selChat, setSelChat }) {
     const handleSendMsg = (e) => {
         console.log("handleSendMsg")
         e.preventDefault();
-        setShowWebcam(false);
-        setImage(null);
         sendMessage();
         setAllUserChats([...moveToTop(allUserChats, selChat?._id)]);
         setMessage("");
+        setShowWebcam(false);
+        setImage(null);
+        setRecording(false);
+        setAudio(null);
+        setAudioUrll(null);
     }
 
     const getMsgHistory = async (chatId, beforeTS) => {
@@ -385,16 +387,21 @@ export default function Messages({ user, selChat, setSelChat }) {
                             onAudioCaptured={(audio) => {
                                 if (audio === null) {
                                     setAudio(null);
+                                    setAudioUrll(null);
                                     return;
                                 }
 
                                 const reader = new FileReader();
                                 reader.onloadend = () => {
                                     const base64Audio = reader.result;
-                                    setAudio(base64Audio);
+                                    setAudioUrll(base64Audio);
                                 };
                                 reader.readAsDataURL(audio);                           
                             }}
+                            recording={recording}
+                            setRecording={setRecording}
+                            audioBlob={audio}
+                            setAudioBlob={setAudio}
                         />}
                         <textarea
                             type="text"

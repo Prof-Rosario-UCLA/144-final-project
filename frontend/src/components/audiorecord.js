@@ -1,9 +1,8 @@
 import React, { useState, useRef } from 'react';
 
-export default function AudioRecorder({ onAudioCaptured }) {
+export default function AudioRecorder({ onAudioCaptured, recording, setRecording, audioBlob, setAudioBlob }) {
   const mediaRecorderRef = useRef(null);
-  const [recording, setRecording] = useState(false);
-  const [audioBlob, setAudioBlob] = useState(null);
+  // const [audioBlob, setAudioBlob] = useState(null);
 
   const startRecording = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
