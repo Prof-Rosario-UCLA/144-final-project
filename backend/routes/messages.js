@@ -13,12 +13,12 @@ router.get('/:chatId/:before', async (req, res) => {
   try {
     const { chatId, before } = req.params;
     // const { before } = req.query; // pagination
-    const limit = 50;
+    const limit = 10;
 
     // console.log(chatId, before)
 
     const msgs = await Message
-      .find({ chat: chatId, createdAt: { $lte: before } })
+      .find({ chat: chatId, createdAt: { $lt: before } })
       .sort({ createdAt: -1 })
       .limit(parseInt(limit, 10))
       .populate('sender', 'username')

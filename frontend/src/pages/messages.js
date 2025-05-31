@@ -9,19 +9,15 @@ export default function Messages({ user, selChat, setSelChat }) {
     const [image, setImage] = useState(null);
     const [audio, setAudio] = useState(null);
     const [allUserChats, setAllUserChats] = useState([]);
-    const [chatHistories, setChatHistories] = useState({});
     const [showWebcam, setShowWebcam] = useState(false);
     const [recording, setRecording] = useState(false);
     const [audioUrll, setAudioUrll] = useState(null);
-    // const [selChat, setSelChat] = useState([]);
     const [selChatHistory, setSelChatHistory] = useState(null);
-    const [newMsgs, setNewMsgs] = useState([]);
+    const [msgsLoading, setMsgsLoading] = useState(false);
+    const [paginationScroll, setPaginationScroll] = useState(false)
     const scrollBottom = useRef();
-    const moveToTop = (list, key) => {
-        const obj = list.find(item => item._id === key);
-        if (!obj) return list;
-        return [obj, ...list.filter(item => item._id !== key)];
-      }
+    const scrollTop = useRef();
+
     const socket = io("http://localhost:3002/", { 
         auth: {
             username: user.username,
@@ -31,7 +27,8 @@ export default function Messages({ user, selChat, setSelChat }) {
     });
 
     useEffect(() => {
-        scrollBottom?.current?.scrollIntoView({ behavior: 'smooth' })
+        ((paginationScroll) ? scrollTop : scrollBottom)?.current?.scrollIntoView({ behavior: 'smooth' })
+        setPaginationScroll(false);
     }, [selChatHistory])
 
 
@@ -189,7 +186,6 @@ export default function Messages({ user, selChat, setSelChat }) {
         console.log("handleSendMsg")
         e.preventDefault();
         sendMessage();
-        setAllUserChats([...moveToTop(allUserChats, selChat?._id)]);
         setMessage("");
         setShowWebcam(false);
         setImage(null);
@@ -198,7 +194,7 @@ export default function Messages({ user, selChat, setSelChat }) {
         setAudioUrll(null);
     }
 
-    const getMsgHistory = async (chatId, beforeTS) => {
+    const getMsgHistory = async (chatId, beforeTS, pagination = false) => {
         try {
             const resp = await fetch(`${API_URL}/api/messages/${chatId}/${beforeTS}`, {
                 method: 'GET',
@@ -206,10 +202,11 @@ export default function Messages({ user, selChat, setSelChat }) {
                     'Content-Type': 'application/json',
                 },
             });
-            const r = await resp.json()
-            console.log("msg history with", r)
+            const r = await resp.json();
+            console.log(`msg history with ${pagination && "pagination"}`, r);
             // console.log(chatId, beforeTS)
-            setSelChatHistory(() => r)
+            setMsgsLoading(false);
+            (pagination) ? setSelChatHistory(cur => [...r, ...cur]) : setSelChatHistory(() => r)
         } catch(e) {
             console.log("getMsgHistory error:", e)
         }
@@ -236,14 +233,21 @@ export default function Messages({ user, selChat, setSelChat }) {
     }
 
     const handleSelChat = (e, chat) => {
-        setNewMsgs([...newMsgs.filter(m => m !== chat._id)])
         if(e) e.preventDefault();
         setSelChat(chat);
         console.log("selChat", chat)
-        const beforeTS = (new Date()).toISOString()
+        const beforeTS = selChatHistory?.[0]?.createdAt || (new Date()).toISOString()
         getMsgHistory(chat._id, beforeTS);
         markChatRead(chat._id);
         // console.log("allChats", allUserChats)
+    }
+
+    const handleChatPagination = (e, chat) => {
+        if(e) e.preventDefault();
+        setPaginationScroll(true);
+        setMsgsLoading(true);
+        const beforeTS = selChatHistory?.[0]?.createdAt || (new Date()).toISOString()
+        getMsgHistory(chat._id, beforeTS, true);
     }
 
     return (
@@ -260,15 +264,8 @@ export default function Messages({ user, selChat, setSelChat }) {
                 </h1>
                 
                 {((allUserChats.length > 0) ? (allUserChats.sort((a, b) => {
-                    const A = a?.latestMessage?.createdAt;
-                    const B = b?.latestMessage?.createdAt;
-                  
-                    const aIsNull = A == null;
-                    const bIsNull = B == null;
-                    if (aIsNull && !bIsNull) return -1;
-                    if (!aIsNull && bIsNull) return 1;
-                    if (aIsNull && bIsNull) return 0;
-                  
+                    const A = a?.latestMessage?.createdAt || a?.createdAt;
+                    const B = b?.latestMessage?.createdAt || b?.createdAt;
                     return B.localeCompare(A);
                 }).map((c, i) => (
                     <button
@@ -311,9 +308,24 @@ export default function Messages({ user, selChat, setSelChat }) {
             <div
             className='h-full sm:w-4/5 w-2/3 bg-indigo-100 flex flex-col'
             >   
+                <div ref={scrollTop} />
                 <div
                 className={'flex-1 flex flex-col p-[1em] overflow-y-auto ' + ((selChatHistory) ? "bg-indigo-50" : "bg-zinc-50")}
-                >
+                >   
+                    {(selChatHistory && selChatHistory.length > 0) && 
+                    <div
+                    className='flex justify-center items-center'
+                    >
+                        {(msgsLoading) ? (
+                            <div className="w-[1.5em] h-[1.5em] border-2 border-gray-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                        ) : (
+                        <button
+                        className='w-fit px-[1em] py-[.2em] text-sm bg-gray-300 hover:bg-gray-400/70 rounded-md border-[.1em] border-slate-800 transition-all ease-linear duration-150'
+                        onClick={(e) => handleChatPagination(e, selChat)}
+                        >
+                            Load more messages
+                        </button>)}
+                    </div>}
                     {(selChatHistory && selChatHistory.length > 0) ? (selChatHistory.map((s, i) => (
                         <div
                         className='w-full flex flex-col bg-transparent my-[.5em]'
@@ -364,9 +376,7 @@ export default function Messages({ user, selChat, setSelChat }) {
                                 No conversation selected. Click on one to get started!
                             </p>
                         ))}
-                    <div 
-                    ref={scrollBottom}
-                    />
+                    <div ref={scrollBottom}/>
                 </div>
                 {selChat && 
                     <form
