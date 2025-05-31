@@ -95,7 +95,7 @@ export default function FindNewChats({ user, setTab, setSelChat }) {
                     {/* <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div> */}
                 </div>
                 <div
-                className="flex-1 w-full m-[1em] sm:mb-[4em] mb-[12em] overflow-y-auto sm:px-[3em] px-[.5em] sm:pt-[1em] pt-[.5em] rounded-xl border-slate-100 sm:border-[.3em] border-[.1em] "
+                className="flex-1 w-full m-[1em] sm:mb-[4em] mb-[12em] overflow-y-auto sm:px-[3em] px-[.5em] sm:pt-[1em] pt-[.5em] rounded-xl border-transparent sm:border-[.3em] border-[.1em] "
                 >   
                     {(queryResult.length > 0) ? (queryResult.filter(q => q._id !== user._id).map((q, i) => (
                         <div

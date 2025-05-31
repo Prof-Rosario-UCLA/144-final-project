@@ -314,7 +314,7 @@ export default function Messages({ user, selChat, setSelChat }) {
                 >   
                     {(selChatHistory && selChatHistory.length > 0) && 
                     <div
-                    className='flex justify-center items-center'
+                    className='flex justify-center items-center mb-[2em]'
                     >
                         {(msgsLoading) ? (
                             <div className="w-[1.5em] h-[1.5em] border-2 border-gray-500 border-t-transparent rounded-full animate-spin mx-auto"></div>

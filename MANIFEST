@@ -1,7 +1,7 @@
 Planning
 
 message objects contain a chatID field, which references the chat it belongs in
-    -helps w pagination
+    -[DONE] helps w pagination
 
 deploying
     -GAE
@@ -17,7 +17,6 @@ routes for chats:
     -[DONE] create chat or open current chat (upon req) 
     -[DONE] list all chats
     -[DONE] may need to overhaul and add lastMessageSent and lastTimeRead per chat for notif handling 
-        -how much should be handled on FE
 
 
 [DONE] Chats should have some schema field or route indicator on latest message sent in it (for frontend ordering)
@@ -62,6 +61,12 @@ object store:
 
 camera & mic:
     -[DONE] frontend deal where it sends the blob using /upload path (msg)
+
+PWA:
+    -make something show up when offline: attempting to load, etc
+
+WASM:
+    -WebAssembly with TypeScript
 
 
 
