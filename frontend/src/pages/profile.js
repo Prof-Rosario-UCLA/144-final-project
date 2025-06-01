@@ -38,7 +38,7 @@ export default function Profile({ user }) {
         className="w-full min-h-screen max-h-max bg-violet-100 flex flex-row items-center justify-center overflow-hidden"
         >
             <div 
-            className="w-full max-w-md bg-zinc-100 rounded-2xl shadow-md p-6 text-center mb-[5rem]"
+            className="w-full max-w-md bg-zinc-100/50 rounded-2xl shadow-md p-0 sm:p-[2.5em] text-center mb-[5rem]"
             >
                 <form
                 onSubmit={(e) => { handleSubmit(e)}}

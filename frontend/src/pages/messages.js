@@ -14,6 +14,7 @@ export default function Messages({ user, selChat, setSelChat }) {
     const [audioUrll, setAudioUrll] = useState(null);
     const [selChatHistory, setSelChatHistory] = useState(null);
     const [msgsLoading, setMsgsLoading] = useState(false);
+    
     const [paginationScroll, setPaginationScroll] = useState(false)
     const scrollBottom = useRef();
     const scrollTop = useRef();
@@ -234,9 +235,10 @@ export default function Messages({ user, selChat, setSelChat }) {
 
     const handleSelChat = (e, chat) => {
         if(e) e.preventDefault();
+        if (chat?._id == selChat?._id) return;
         setSelChat(chat);
         console.log("selChat", chat)
-        const beforeTS = selChatHistory?.[0]?.createdAt || (new Date()).toISOString()
+        const beforeTS = (new Date()).toISOString()
         getMsgHistory(chat._id, beforeTS);
         markChatRead(chat._id);
         // console.log("allChats", allUserChats)
