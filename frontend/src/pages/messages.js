@@ -14,7 +14,7 @@ export default function Messages({ user, selChat, setSelChat }) {
     const [audioUrll, setAudioUrll] = useState(null);
     const [selChatHistory, setSelChatHistory] = useState(null);
     const [msgsLoading, setMsgsLoading] = useState(false);
-    
+    const [chatsLoading, setChatsLoading] = useState(false);
     const [paginationScroll, setPaginationScroll] = useState(false)
     const scrollBottom = useRef();
     const scrollTop = useRef();
@@ -80,6 +80,7 @@ export default function Messages({ user, selChat, setSelChat }) {
 
     const getAllChats = async() => {
         try {
+            setChatsLoading(true);
             console.log("getAllChats with user:", user);
             const resp = await fetch(`${API_URL}/api/chats/${user._id}`, {
                 method: 'GET',
@@ -90,6 +91,7 @@ export default function Messages({ user, selChat, setSelChat }) {
             const r = await resp.json()
             console.log("allchats:", r)
             // console.log(user)
+            setChatsLoading(false);
             setAllUserChats(() => r)
         } catch(e) {
             console.log("getAllChats error:", e);
@@ -235,7 +237,7 @@ export default function Messages({ user, selChat, setSelChat }) {
 
     const handleSelChat = (e, chat) => {
         if(e) e.preventDefault();
-        if (chat?._id == selChat?._id) return;
+        if (chat?._id === selChat?._id) return;
         setSelChat(chat);
         console.log("selChat", chat)
         const beforeTS = (new Date()).toISOString()
@@ -265,7 +267,18 @@ export default function Messages({ user, selChat, setSelChat }) {
                     Your Conversations
                 </h1>
                 
-                {((allUserChats.length > 0) ? (allUserChats.sort((a, b) => {
+                {(chatsLoading) ? (
+                    <div
+                    className='flex flex-col w-full text-center items-center mt-[2em]'
+                    >
+                        <h2
+                        className='text-xs sm:text-lg font-bold text-[2em]'
+                        >
+                            Getting your chats...
+                        </h2>
+                        <div className="w-[1.5em] h-[1.5em] border-2 border-black border-t-transparent rounded-full animate-spin mx-auto"></div>
+                    </div>
+                ) : (((allUserChats.length > 0) ? (allUserChats.sort((a, b) => {
                     const A = a?.latestMessage?.createdAt || a?.createdAt;
                     const B = b?.latestMessage?.createdAt || b?.createdAt;
                     return B.localeCompare(A);
@@ -305,7 +318,7 @@ export default function Messages({ user, selChat, setSelChat }) {
                     >
                         No conversations available
                     </p>
-                ))}
+                )))}
             </div>
             <div
             className='h-full sm:w-4/5 w-2/3 bg-indigo-100 flex flex-col'
