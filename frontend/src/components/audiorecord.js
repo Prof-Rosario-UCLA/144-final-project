@@ -37,11 +37,15 @@ export default function AudioRecorder({ onAudioCaptured, recording, setRecording
   };
 
   return (
-    <div className="flex flex-col items-center gap-2">
+    <div 
+    className="flex flex-col items-center gap-2"
+    aria-label="audio background"
+    >
       {!recording && !audioBlob && (
         <button
           onClick={startRecording}
           className="px-4 py-2 sm:text-lg text-xs bg-purple-300 hover:bg-purple-400 text-white font-semibold rounded-xl cursor-pointer focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors ease-linear duration-150"
+          aria-label="start audio record"
         >
           🎙️
         </button>
@@ -51,6 +55,7 @@ export default function AudioRecorder({ onAudioCaptured, recording, setRecording
         <button
           onClick={stopRecording}
           className="px-4 py-2 mr-[1em] bg-red-600 hover:bg-red-500 text-white rounded-lg transition-colors ease-linear duration-150"
+          aria-label="stop audio record"
         >
           ⏹️
         </button>
@@ -62,6 +67,7 @@ export default function AudioRecorder({ onAudioCaptured, recording, setRecording
           <button
             onClick={reset}
             className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg transition-colors ease-linear duration-150"
+            aria-label="cancel audio record"
           >
             Cancel
           </button>

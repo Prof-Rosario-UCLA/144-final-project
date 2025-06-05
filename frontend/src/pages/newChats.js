@@ -62,12 +62,15 @@ export default function FindNewChats({ user, setTab, setSelChat }) {
     return (
         <div
         className="w-full min-h-full max-h-max bg-sky-100 flex flex-row overflow-hidden"
+        aria-label="full screen background"
         >
             <div
             className="h-screen sm:w-5/6 lg:w-1/2 w-full m-auto bg-transparent flex flex-col items-center p-[2em]"
+            aria-label="items box"
             >
                 <div 
                 className="w-full sm:max-w-lg bg-zinc-100 rounded-2xl shadow-md sm:p-[1em] p-[.5em] text-center"
+                aria-label="search box"
                 >
                     <h2 
                     className="sm:text-xl text-md font-bold sm:mb-[1em] mb-[.5em] text-gray-800"
@@ -77,6 +80,7 @@ export default function FindNewChats({ user, setTab, setSelChat }) {
                     <form
                     onSubmit={(e) => handleSubmit(e)}
                     className="flex items-center"
+                    aria-label="form query"
                     >
                         <input
                             type="text"
@@ -88,6 +92,7 @@ export default function FindNewChats({ user, setTab, setSelChat }) {
                         <button
                             type="submit"
                             className="sm:ml-[1em] ml-[.2em] sm:px-4 sm:py-2 p-[.5em] sm:text-lg text-xs bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ease-linear duration-150"
+                            aria-label="submit search query"
                         >
                             Search
                         </button>
@@ -96,11 +101,13 @@ export default function FindNewChats({ user, setTab, setSelChat }) {
                 </div>
                 <div
                 className="flex-1 w-full m-[1em] sm:mb-[4em] mb-[12em] overflow-y-auto sm:px-[3em] px-[.5em] sm:pt-[1em] pt-[.5em] rounded-xl border-transparent sm:border-[.3em] border-[.1em] "
+                aria-label="query results box"
                 >   
                     {(queryResult.length > 0) ? (queryResult.filter(q => q._id !== user._id).map((q, i) => (
                         <div
                         className="sm:h-[5em] h-[3em] w-full py-2 sm:px-[3em] px-[1em] bg-zinc-100 flex items-center text-center flex-row rounded-full mb-[1em] shadow-md"
                         key={i}
+                        aria-label="query result" 
                         >
                             <p
                             className="text-xs sm:text-lg font-bold text-nowrap overflow-hidden whitespace-nowrap truncate"
@@ -113,6 +120,8 @@ export default function FindNewChats({ user, setTab, setSelChat }) {
                                 <p
                                 className="font-bold sm:text-lg text-xs"
                                 onClick={(e) => handleAdd(e, q)}
+                                role="button"
+                                aria-label="actual add chat button"
                                 >
                                     ADD
                                 </p>

@@ -36,13 +36,16 @@ export default function Profile({ user }) {
     return (
         <div
         className="w-full min-h-screen max-h-max bg-violet-100 flex flex-row items-center justify-center overflow-hidden"
+        aria-label="full screen background"
         >
             <div 
             className="w-full max-w-md bg-zinc-100/50 rounded-2xl shadow-md p-0 sm:p-[2.5em] text-center mb-[5rem]"
+            aria-label="box around form"
             >
                 <form
                 onSubmit={(e) => { handleSubmit(e)}}
                 className="max-w-md mx-auto p-6 bg-transparent rounded-2xl"
+                aria-label="username change form"
                 >
                     <label
                         htmlFor="username"
@@ -68,6 +71,7 @@ export default function Profile({ user }) {
                         onClick={() => setUsername(user.username)}
                         disabled={isSaving}
                         className="px-5 py-2 bg-sky-200 hover:bg-sky-300 text-sky-800 font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-300 disabled:opacity-50 transition"
+                        aria-label="Cancel username change"
                         >
                             Cancel
                         </button>
@@ -75,6 +79,7 @@ export default function Profile({ user }) {
                         type="submit"
                         disabled={isSaving}
                         className="px-5 py-2 bg-violet-400 hover:bg-violet-500 text-white font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-300 disabled:opacity-50 transition"
+                        aria-label="Submit username change"
                         >
                             {isSaving ? "Saving..." : "Save"}
                         </button>

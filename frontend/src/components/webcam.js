@@ -16,11 +16,15 @@ export default function WebcamComp({ onImageCaptured, showWebcam, setShowWebcam,
   }, [showWebcam])
 
   return (
-    <div className="flex flex-col items-center max-w-sm">
+    <div 
+    className="flex flex-col items-center max-w-sm"
+    aria-label="webcam button background"
+    >
       {!showWebcam && !image && (
         <button
           onClick={() => setShowWebcam(true)}
           className="px-4 py-2 sm:text-lg text-xs bg-purple-300 hover:bg-purple-400 text-white font-semibold rounded-xl cursor-pointer focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors ease-linear duration-150"
+          aria-label="start webcam"
         >
           📷 
         </button>
@@ -36,16 +40,19 @@ export default function WebcamComp({ onImageCaptured, showWebcam, setShowWebcam,
           />
           <div
           className="flex flex-row items-center justify-center sm:space-x-[4em] space-x-[.5em]"
+          aria-label="camera picture area"
           >
             <button
               onClick={captureWebcam}
               className="mt-4 px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg sm:text-lg text-xs transition-colors ease-linear duration-150"
+              aria-label="take picture button"
             >
               Capture
             </button>
             <button
               onClick={() => setShowWebcam(false)}
               className="mt-4 px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg sm:text-lg text-xs transition-colors ease-linear duration-150"
+              aria-label="hide the camera"
             >
               Hide
             </button>
@@ -55,7 +62,7 @@ export default function WebcamComp({ onImageCaptured, showWebcam, setShowWebcam,
 
       {image && (
         <>
-          <img src={image} alt="Captured" className="rounded-lg mt-[.6em] border-[.3em] border-slate-800" />
+          <img src={image} alt="Captured Image" className="rounded-lg mt-[.6em] border-[.3em] border-slate-800" />
           <button
             onClick={() => {
               setImage(null);
@@ -63,6 +70,7 @@ export default function WebcamComp({ onImageCaptured, showWebcam, setShowWebcam,
               onImageCaptured?.(null);
             }}
             className="mt-4 px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg transition-colors ease-linear duration-150"
+            aria-label="retake the picture"
           >
             🔁 Retake
           </button>

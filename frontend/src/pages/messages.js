@@ -257,9 +257,11 @@ export default function Messages({ user, selChat, setSelChat }) {
     return (
         <div
         className="w-full min-h-full max-h-max bg-sky-100 flex flex-row overflow-hidden"
+        aria-label="full screen background"
         >
             <div
             className="h-screen sm:w-1/5 w-1/3 bg-violet-100 max-h-full divide-sky-900 overflow-y-auto border-r-2 border-black flex flex-col"
+            aria-label="vertical conversation selector"
             >
                 <h1
                 className='w-full py-[1em] text-center font-extrabold text-violet-900 border-b-2 border-black text-xs sm:text-lg'
@@ -270,6 +272,7 @@ export default function Messages({ user, selChat, setSelChat }) {
                 {(chatsLoading) ? (
                     <div
                     className='flex flex-col w-full text-center items-center mt-[2em]'
+                    aria-label="chats loading"
                     >
                         <h2
                         className='text-xs sm:text-lg font-bold text-[2em]'
@@ -290,9 +293,11 @@ export default function Messages({ user, selChat, setSelChat }) {
                     >
                         <div
                         className='flex flex-row w-full my-auto text-center items-center justify-center sm:mr-[.4em] mr-[.2em]'
+                        aria-label="conversation box text styling"
                         >
                             <div 
                             className={'sm:w-[.6em] sm:h-[.6em] w-[.4em] h-[.4em] rounded-full mr-[.5em] flex-shrink-0 transition-colors ease-linear duration-150 ' + ((!c?.latestRead?.find(l => l.user === user._id).hasRead || false) ? "bg-sky-700 animate-ping " : "bg-transparent")}
+                            aria-label="blinking notification"
                             />
                             <h1
                             className="text-xs sm:text-lg md:text-xl font-bold text-nowrap text-center overflow-hidden whitespace-nowrap truncate"// mt-[.5em] sm:mt-[1em]"
@@ -322,14 +327,17 @@ export default function Messages({ user, selChat, setSelChat }) {
             </div>
             <div
             className='h-full sm:w-4/5 w-2/3 bg-indigo-100 flex flex-col'
+            aria-label="messages area"
             >   
                 <div ref={scrollTop} />
                 <div
                 className={'flex-1 flex flex-col p-[1em] overflow-y-auto ' + ((selChatHistory) ? "bg-indigo-50" : "bg-zinc-50")}
+                aria-label="scrollable messages area"
                 >   
                     {(selChatHistory && selChatHistory.length > 0) && 
                     <div
                     className='flex justify-center items-center mb-[2em]'
+                    aria-label="load more msgs button area"
                     >
                         {(msgsLoading) ? (
                             <div className="w-[1.5em] h-[1.5em] border-2 border-gray-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
@@ -345,6 +353,7 @@ export default function Messages({ user, selChat, setSelChat }) {
                         <div
                         className='w-full flex flex-col bg-transparent my-[.5em]'
                         key={i}
+                        aria-label="messages area"
                         >
                             <h1
                             className='text-lg font-extrabold'
@@ -352,6 +361,7 @@ export default function Messages({ user, selChat, setSelChat }) {
                                 {s?.sender?.username} &nbsp;&nbsp;&nbsp;&nbsp;
                                 <span
                                 className='font-light text-xs inline-block whitespace-normal break-words'
+                                aria-label="messages date"  
                                 > 
                                     {`${s?.createdAt.substring(0, 10)} ${s?.createdAt.substring(12, 19)}`} 
                                 </span>
@@ -400,6 +410,7 @@ export default function Messages({ user, selChat, setSelChat }) {
                         if(e.key === "Enter"&& !e.shiftKey) handleSendMsg(e);
                     }}
                     className="flex items-center sm:p-[2em] p-[.5em] bg-indigo-50 overflow-x-auto space-x-[1em]"
+                    aria-label="send msg form"
                     >
                         {!audio && <WebcamComp
                             image={image}
@@ -438,6 +449,7 @@ export default function Messages({ user, selChat, setSelChat }) {
                         <button
                             type="submit"
                             className="sm:ml-[1em] ml-[.2em] px-4 py-2 sm:text-lg text-xs bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ease-linear duration-150"
+                            aria-label="send message button"
                         >
                             Send
                         </button>
