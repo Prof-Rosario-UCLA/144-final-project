@@ -12,7 +12,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: process.env.FRONTEND_URL + '/api/users/auth/google/callback',
+      callbackURL: (process.env.FRONTEND_URL || 'http://localhost:8080') + '/api/users/auth/google/callback',
       scope: ['profile', 'email']
     },
     async (accessToken, refreshToken, profile, done) => {
@@ -77,10 +77,10 @@ router.get(
         maxAge: 7 * 24 * 60 * 60 * 1000 
       });
 
-      res.redirect(`${process.env.FRONTEND_URL}/?token=${token}`);
+      res.redirect(`${(process.env.FRONTEND_URL || 'http://localhost:8080')}/?token=${token}`);
     } catch (error) {
       console.error('Error creating token:', error);
-      res.redirect(`${process.env.FRONTEND_URL}`);
+      res.redirect(`${(process.env.FRONTEND_URL || 'http://localhost:8080')}`);
     }
   }
 );

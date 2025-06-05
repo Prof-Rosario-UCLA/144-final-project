@@ -17,7 +17,7 @@ app.use(cookieParser());
 app.use(passport.initialize());
 
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: process.env.FRONTEND_URL || 'http://localhost:8080',
   credentials: true
 }));
 
@@ -56,7 +56,7 @@ const httpServer = require("http").createServer(app);
 // const socketPort = process.env.SOCKET_PORT || 3002;
 const io = require("socket.io")(httpServer, {
   cors: {
-    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    origin: process.env.FRONTEND_URL || "http://localhost:8080",
   },
 })
 

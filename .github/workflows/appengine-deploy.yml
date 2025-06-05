@@ -38,7 +38,7 @@ jobs:
       - name: Add gcloud
         uses: google-github-actions/setup-gcloud@v1
         with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          project_id: cs144-su25-pranavp21
           export_default_credentials: true
 
       - name: Deploy to App Engine

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { API_URL } from '../constants'
+import { API_URL, DEBUG } from '../constants'
 
 export default function Profile({ user }) {
     const [username, setUsername] = useState(user.username);
@@ -14,7 +14,7 @@ export default function Profile({ user }) {
             return;
         }
 
-        const resp = await fetch(`${API_URL}/api/users/username`, {
+        const resp = await fetch(`${(DEBUG ? 'http://localhost:8080' : API_URL)}/api/users/username`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',

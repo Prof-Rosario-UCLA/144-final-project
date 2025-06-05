@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { API_URL } from '../constants'
+import { API_URL, DEBUG } from '../constants'
 import { io } from "socket.io-client";
 import WebcamComp from '../components/webcam';
 import AudioRecorder from '../components/audiorecord';
@@ -19,7 +19,7 @@ export default function Messages({ user, selChat, setSelChat }) {
     const scrollBottom = useRef();
     const scrollTop = useRef();
 
-    const socket = io('https://cs144-su25-pranavp21.uw.r.appspot.com', { 
+    const socket = io((DEBUG ? 'http://localhost:8080' : 'https://cs144-su25-pranavp21.uw.r.appspot.com'), { 
         auth: {
             username: user.username,
             user_id: user._id
@@ -82,7 +82,7 @@ export default function Messages({ user, selChat, setSelChat }) {
         try {
             setChatsLoading(true);
             console.log("getAllChats with user:", user);
-            const resp = await fetch(`${API_URL}/api/chats/${user._id}`, {
+            const resp = await fetch(`${(DEBUG ? 'http://localhost:8080' : API_URL)}/api/chats/${user._id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -106,7 +106,7 @@ export default function Messages({ user, selChat, setSelChat }) {
             // if image != null, then add to object storage, get url, and then send that to backend
             let imageUrl = "";
             if (image) {
-                const imageResp = await fetch(`${API_URL}/api/messages/upload`, {
+                const imageResp = await fetch(`${(DEBUG ? 'http://localhost:8080' : API_URL)}/api/messages/upload`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -125,7 +125,7 @@ export default function Messages({ user, selChat, setSelChat }) {
 
             let audioUrl = "";
             if (audio) {
-                const audioResp = await fetch(`${API_URL}/api/messages/upload`, {
+                const audioResp = await fetch(`${(DEBUG ? 'http://localhost:8080' : API_URL)}/api/messages/upload`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -157,7 +157,7 @@ export default function Messages({ user, selChat, setSelChat }) {
 
             if (isMedia === "none" && message === "") return
 
-            const resp = await fetch(`${API_URL}/api/messages/${selChat._id}`, {
+            const resp = await fetch(`${(DEBUG ? 'http://localhost:8080' : API_URL)}/api/messages/${selChat._id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -199,7 +199,7 @@ export default function Messages({ user, selChat, setSelChat }) {
 
     const getMsgHistory = async (chatId, beforeTS, pagination = false) => {
         try {
-            const resp = await fetch(`${API_URL}/api/messages/${chatId}/${beforeTS}`, {
+            const resp = await fetch(`${(DEBUG ? 'http://localhost:8080' : API_URL)}/api/messages/${chatId}/${beforeTS}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -217,7 +217,7 @@ export default function Messages({ user, selChat, setSelChat }) {
 
     const markChatRead = async (chatId) => {
         try {
-            const resp = await fetch(`${API_URL}/api/chats/${chatId}/read`, {
+            const resp = await fetch(`${(DEBUG ? 'http://localhost:8080' : API_URL)}/api/chats/${chatId}/read`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

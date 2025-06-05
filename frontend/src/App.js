@@ -1,6 +1,6 @@
 import Login from './pages/login';
 import Messages from './pages/messages'
-import { API_URL } from './constants'
+import { API_URL, DEBUG } from './constants'
 import { React, useEffect, useState } from 'react';
 import FindNewChats from './pages/newChats';
 import Profile from './pages/profile';
@@ -21,7 +21,7 @@ function App() {
     }
     
     try {
-      const resp = await fetch(`${API_URL}/api/users/me`, {
+      const resp = await fetch(`${(DEBUG ? 'http://localhost:8080' : API_URL)}/api/users/me`, {
         headers: {
           Authorization: `Bearer ${token}`
         }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { API_URL } from '../constants'
+import { API_URL, DEBUG } from '../constants'
 
 export default function Login({ onLoginSuccess }) {
     // set error if something wrong?
@@ -10,7 +10,7 @@ export default function Login({ onLoginSuccess }) {
 
     const validateToken = async (token) => {
         try {
-            const response = await fetch(`${API_URL}/api/users/validate-token`, {
+            const response = await fetch(`${(DEBUG ? 'http://localhost:8080' : API_URL)}/api/users/validate-token`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -68,7 +68,7 @@ export default function Login({ onLoginSuccess }) {
     }, []);
 
     const handleGoogleLogin = () => {
-        window.location.href = `${API_URL}/api/users/auth/google`;
+        window.location.href = `${(DEBUG ? 'http://localhost:8080' : API_URL)}/api/users/auth/google`;
     };
 
     if (isLoading) {

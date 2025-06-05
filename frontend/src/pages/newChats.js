@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { API_URL } from '../constants'
+import { API_URL, DEBUG } from '../constants'
 
 export default function FindNewChats({ user, setTab, setSelChat }) {
     const [query, setQuery] = useState("");
@@ -8,7 +8,7 @@ export default function FindNewChats({ user, setTab, setSelChat }) {
 
     const getQueryResult = async () => {
         try {
-            const resp = await fetch(`${API_URL}/api/users/${query}`, {
+            const resp = await fetch(`${(DEBUG ? 'http://localhost:8080' : API_URL)}/api/users/${query}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ export default function FindNewChats({ user, setTab, setSelChat }) {
 
     const addChat = async (otherUser) => {
         try {
-            const resp = await fetch(`${API_URL}/api/chats/`, {
+            const resp = await fetch(`${(DEBUG ? 'http://localhost:8080' : API_URL)}/api/chats/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
