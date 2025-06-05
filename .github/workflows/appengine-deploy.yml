@@ -8,6 +8,40 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Print Hello World
-        run: echo "Hello, World"
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '23.x'
+
+      - name: Build frontend
+        working-directory: ./frontend
+        run: |
+          npm ci
+          npm run build
+
+      - name: Copy into Backend
+        run: |
+          rm -rf backend/frontend-build
+          mkdir -p backend/frontend-build
+          cp -R frontend/build/* backend/frontend-build/
+
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: '${{ secrets.GCP_KEY }}'
+
+      - name: Add gcloud
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          export_default_credentials: true
+
+      - name: Deploy to App Engine
+        working-directory: ./backend
+        run: |
+          gcloud app deploy app.yaml --quiet
