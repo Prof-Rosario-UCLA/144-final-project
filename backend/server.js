@@ -8,6 +8,7 @@ const passport = require('passport');
 const { router: userRoutes, verifyToken } = require('./routes/users');
 const { router: messageRoutes } = require('./routes/messages');
 const { router: chatRoutes } = require('./routes/chats');
+const path = require('path');
 
 
 const app = express();
@@ -31,7 +32,7 @@ app.use(
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-})
+}) 
 .then(() => console.log('Connected to MongoDB'))
 .catch(err => {
   console.error('MongoDB connection error:', err);
@@ -42,17 +43,22 @@ app.use('/api/users', userRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/chats', chatRoutes);
 
+app.use(express.static(path.join(__dirname, 'frontend-build')));
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend-build', 'index.html'));
+});
+
+const PORT = process.env.PORT || 8080;
+
 const httpServer = require("http").createServer(app);
 //no idea if this is right
-const socketPort = process.env.SOCKET_PORT || 3002;
-httpServer.listen(socketPort, () => {
-  console.log(`http Socket is running on port ${socketPort}`);
-});
+// const socketPort = process.env.SOCKET_PORT || 3002;
 const io = require("socket.io")(httpServer, {
   cors: {
     origin: process.env.FRONTEND_URL || "http://localhost:3000",
   },
-});
+})
 
 const socketMap = new Map();
 
@@ -83,7 +89,11 @@ io.on("connection", (socket) => {
   });
 });
 
-const port = process.env.PORT || 3001;
-app.listen(port, () => {
-  console.log(`Server listening on http://localhost:${port}`);
+httpServer.listen(PORT, () => {
+  console.log(`http Socket is running on port ${PORT}`);
 });
+
+// const port = process.env.PORT || 3001;
+// app.listen(port, () => {
+//   console.log(`Server listening on http://localhost:${port}`);
+// });

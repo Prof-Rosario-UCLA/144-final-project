@@ -1,0 +1,27 @@
+runtime: nodejs
+env: flex
+
+runtime_config:
+  operating_system: "ubuntu22"
+  runtime_version: "22"
+  
+network:
+  session_affinity: true
+
+automatic_scaling:
+  min_num_instances: 1 
+
+resources:
+  cpu: 1
+  memory_gb: 1
+  disk_size_gb: 10
+
+env_variables:
+  MONGO_UN: 'testing'
+  MONGO_PW: 'bachpranav'
+  MONGO_URI: 'mongodb+srv://testing:bachpranav@cs144-s25-testing.jbbpxl4.mongodb.net/'
+  FRONTEND_URL: 'https://cs144-su25-pranavp21.uw.r.appspot.com'
+
+  # Google OAuth
+  GOOGLE_CLIENT_ID: '624988632589-o03rqenf0vjdnbu30tbcf0de21m26bch.apps.googleusercontent.com'
+  GOOGLE_CLIENT_SECRET: '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'

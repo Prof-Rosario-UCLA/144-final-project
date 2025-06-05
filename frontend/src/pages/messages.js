@@ -19,7 +19,7 @@ export default function Messages({ user, selChat, setSelChat }) {
     const scrollBottom = useRef();
     const scrollTop = useRef();
 
-    const socket = io("http://localhost:3002/", { 
+    const socket = io('https://cs144-su25-pranavp21.uw.r.appspot.com', { 
         auth: {
             username: user.username,
             user_id: user._id
