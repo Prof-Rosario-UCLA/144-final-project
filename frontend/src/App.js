@@ -4,6 +4,7 @@ import { API_URL, DEBUG } from './constants'
 import { React, useEffect, useState } from 'react';
 import FindNewChats from './pages/newChats';
 import Profile from './pages/profile';
+import CookieBanner from './components/cookiebanner';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -91,6 +92,7 @@ function App() {
     <div 
     className="bg-transparent w-screen h-screen max-h-screen" 
     >
+      <CookieBanner />
       {user ? (
         <div 
         // className="min-h-screen min-w-screen bg-sky-500"
