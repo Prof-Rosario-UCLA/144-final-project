@@ -1,17 +1,17 @@
 Planning
 
-message objects contain a chatID field, which references the chat it belongs in
-    -[DONE] helps w pagination
-
 deploying
-    -GAE
-    -deploy frontend, backend, socket 
+    -[DONE] GAE
+    -[DONE] deploy frontend, backend, socket 
+    -CICD w/ Github actions
 
 routes for messages:
     -[DONE] send a msg (w/ or w/o media files) & emit to socket.io room
         -[DONE] upload for multimedia
     -[DONE] get msgs for some chat (up to a limit/before some time) -- pagination is a frontend deal
     -[DONE] add read flag maybe? depends on chat schema (this was done with a flag per chat participant)
+    -[DONE] message objects contain a chatID field, which references the chat it belongs in
+        -[DONE] helps w pagination
 
 routes for chats:
     -[DONE] create chat or open current chat (upon req) 
@@ -33,26 +33,29 @@ socket stuff:
     -[DONE] when a msg object is emitted to the room, send it to all participants
     -[DONE] implement immediate update on rcv on frontend
     -[DONE] do notif feature and update order of displayed chats
-    -figure out why socket isn't working in multiple laptops? 
-        -need socket to be deployed/running on wifi IP or soemthing
+    -[DONE] figure out why socket isn't working in multiple laptops? 
+        -[DONE] need socket to be deployed/running on wifi IP or soemthing
 
 SSO:
     -[DONE] Google Oauth
     -[DONE] look into jwt tokens, bcrypt
     -[DONE] make /middleware/auth stuff
+    -[DONE] cookie banner
 
 frontend:
     -[DONE] login page
         -[DONE] viewability
         -[DONE] actual sso impl
-    -set username page - easy af
+    -[DONE] set username page
         -[DONE] viewability
-        -[DONE] actual sso impl
+    -[DONE] search for users to chat with (send to existing if alr added)
     -[DONE] chatting area once you login
-    -pagination handling for both chats and messages per chat
-    -[DONE] displaying media types in chat and chat's latest message preview
+    -[DONE] responsive from all dimensions 320px -> whatever is max
+    -[DONE] pagination handling for both chats and messages per chat (chats not needed)
+    -[DONE] displaying media types in chat and chat's latest message pre view
+    -[DONE] add ARIA labels to non-semantic tags
 
-no need for caching
+[DONE] no need for caching or WASM
 
 object store:
     -[DONE] audio, images
@@ -64,9 +67,9 @@ camera & mic:
 
 PWA:
     -make something show up when offline: attempting to load, etc
+        -how to test?
 
-WASM:
-    -WebAssembly with TypeScript
+
 
 
 
