@@ -351,7 +351,7 @@ export default function Messages({ user, selChat, setSelChat }) {
                     </div>}
                     {(selChatHistory && selChatHistory.length > 0) ? (selChatHistory.map((s, i) => (
                         <div
-                        className='w-full flex flex-col bg-transparent my-[.5em]'
+                        className='max-w-fit flex flex-col bg-transparent my-[.5em]'
                         key={i}
                         aria-label="messages area"
                         >
@@ -367,21 +367,21 @@ export default function Messages({ user, selChat, setSelChat }) {
                                 </span>
                             </h1>
                             <p
-                            className={'whitespace-pre-wrap font-semibold px-[1.2em] my-[.3em] w-fit rounded-lg ' + ((s?.sender._id === user._id) ? "bg-blue-300 " : "bg-neutral-200 ") + ((s?.isMedia !== "none" && s?.text === "")  ? " py-[1.2em] " : " py-[.3em] ") + (s?.isMedia !== "none" && " pt-[1.2em]")}
+                            className={'whitespace-pre-wrap max-w-fit font-semibold px-[1.2em] my-[.3em] w-fit rounded-lg ' + ((s?.sender._id === user._id) ? "bg-blue-300 " : "bg-neutral-200 ") + ((s?.isMedia !== "none" && s?.text === "")  ? " py-[1.2em] " : " py-[.3em] ") + (s?.isMedia !== "none" && " pt-[1.2em]")}
                             >
 
                                 {s?.isMedia === "image" && (
                                     <img
                                     src={s?.media}
                                     alt="Media message"
-                                    className={"max-w-xs max-h-64 rounded-lg " + (s?.text !== "" && " pb-[.3em]")}
+                                    className={"max-h-64 rounded-lg " + (s?.text !== "" && " pb-[.3em]")}
                                     />
                                 )} 
                                 { s?.isMedia === "audio" && (
                                     <audio
                                         controls
                                         src={s?.media}
-                                        className={"max-w-xs rounded-lg " + (s?.text !== "" && " pb-[.3em]")}
+                                        className={"max-w-full rounded-lg " + (s?.text !== "" && " pb-[.3em]")}
                                     />
                                 )}
                                 {s?.text}
@@ -409,50 +409,58 @@ export default function Messages({ user, selChat, setSelChat }) {
                     onKeyDown={(e) => {
                         if(e.key === "Enter"&& !e.shiftKey) handleSendMsg(e);
                     }}
-                    className="flex items-center sm:p-[2em] p-[.5em] bg-indigo-50 overflow-x-auto space-x-[1em]"
+                    className="flex flex-col md:flex-row w-full items-center justify-center align-middle p-[.9em] bg-sky-100 md:space-y-0 space-y-[.5em] border-t-2 border-black"
                     aria-label="send msg form"
                     >
-                        {!audio && <WebcamComp
-                            image={image}
-                            setImage={setImage}
-                            onImageCaptured={(img) => setImage(img)}
-                            showWebcam={showWebcam}
-                            setShowWebcam={setShowWebcam}
-                        />}
-                        {!image && <AudioRecorder
-                            onAudioCaptured={(audio) => {
-                                if (audio === null) {
-                                    setAudio(null);
-                                    setAudioUrll(null);
-                                    return;
-                                }
-
-                                const reader = new FileReader();
-                                reader.onloadend = () => {
-                                    const base64Audio = reader.result;
-                                    setAudioUrll(base64Audio);
-                                };
-                                reader.readAsDataURL(audio);                           
-                            }}
-                            recording={recording}
-                            setRecording={setRecording}
-                            audioBlob={audio}
-                            setAudioBlob={setAudio}
-                        />}
-                        <textarea
-                            type="text"
-                            aria-label="Type a message"
-                            value={message}
-                            onChange={(e) => setMessage(e.target.value)}
-                            className="h-[3em] min-w-[9em] flex-1 px-4 py-2 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400 break-words leading-[2rem] resize-none"
-                        />
-                        <button
-                            type="submit"
-                            className="sm:ml-[1em] ml-[.2em] px-4 py-2 sm:text-lg text-xs bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ease-linear duration-150"
-                            aria-label="send message button"
+                        <div
+                        className='flex w-full md:w-auto items-center md:justify-start justify-center px-[.5em] '
                         >
-                            Send
-                        </button>
+                            {!audio && <WebcamComp
+                                image={image}
+                                setImage={setImage}
+                                onImageCaptured={(img) => setImage(img)}
+                                showWebcam={showWebcam}
+                                setShowWebcam={setShowWebcam}
+                            />}
+                            {!image && <AudioRecorder
+                                onAudioCaptured={(audio) => {
+                                    if (audio === null) {
+                                        setAudio(null);
+                                        setAudioUrll(null);
+                                        return;
+                                    }
+
+                                    const reader = new FileReader();
+                                    reader.onloadend = () => {
+                                        const base64Audio = reader.result;
+                                        setAudioUrll(base64Audio);
+                                    };
+                                    reader.readAsDataURL(audio);                           
+                                }}
+                                recording={recording}
+                                setRecording={setRecording}
+                                audioBlob={audio}
+                                setAudioBlob={setAudio}
+                            />}
+                        </div>
+                        <div
+                        className='flex md:flex-1 mb-[.5em] w-full items-center justify-center'
+                        >
+                            <textarea
+                                type="text"
+                                aria-label="Type a message"
+                                value={message}
+                                onChange={(e) => setMessage(e.target.value)}
+                                className="h-[3em] min-w-[4em] flex-1 px-4 py-2 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400 break-words leading-[2rem] resize-none"
+                            />
+                            <button
+                                type="submit"
+                                className="sm:ml-[1em] ml-[.2em] sm:px-4 sm:py-2 px-2 py-1 sm:text-lg text-sm bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ease-linear duration-150"
+                                aria-label="send message button"
+                            >
+                                Send
+                            </button>
+                        </div>
                     </form>
                 }
             </div>

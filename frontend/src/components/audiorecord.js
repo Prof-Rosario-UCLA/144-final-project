@@ -43,9 +43,10 @@ export default function AudioRecorder({ onAudioCaptured, recording, setRecording
     >
       {!recording && !audioBlob && (
         <button
-          onClick={startRecording}
-          className="px-4 py-2 sm:text-lg text-xs bg-purple-300 hover:bg-purple-400 text-white font-semibold rounded-xl cursor-pointer focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors ease-linear duration-150"
-          aria-label="start audio record"
+        onClick={startRecording}
+        className="ml-[.2em] sm:px-4 sm:py-2 px-2 py-1 sm:text-lg text-sm bg-purple-300 hover:bg-purple-400 text-white font-semibold rounded-xl cursor-pointer focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors ease-linear duration-150"
+        aria-label="start audio record"
+        title="Start Recording"
         >
           🎙️
         </button>
@@ -53,9 +54,10 @@ export default function AudioRecorder({ onAudioCaptured, recording, setRecording
 
       {recording && (
         <button
-          onClick={stopRecording}
-          className="px-4 py-2 mr-[1em] bg-red-600 hover:bg-red-500 text-white rounded-lg transition-colors ease-linear duration-150"
-          aria-label="stop audio record"
+        onClick={stopRecording}
+        className="ml-[.2em] sm:px-4 sm:py-2 px-2 py-1 sm:text-lg text-sm mr-[1em] bg-red-600 hover:bg-red-500 text-white font-semibold rounded-xl transition-colors ease-linear duration-150"
+        aria-label="stop audio record"
+        title="Stop Recording"
         >
           ⏹️
         </button>
@@ -63,11 +65,11 @@ export default function AudioRecorder({ onAudioCaptured, recording, setRecording
 
       {audioBlob && (
         <>
-          <audio controls src={URL.createObjectURL(audioBlob)} className="mt-2" />
+          <audio controls src={URL.createObjectURL(audioBlob)} className="mt-2 max-w-[200px]" />
           <button
-            onClick={reset}
-            className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg transition-colors ease-linear duration-150"
-            aria-label="cancel audio record"
+          onClick={reset}
+          className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg transition-colors ease-linear duration-150"
+          aria-label="cancel audio record"
           >
             Cancel
           </button>
